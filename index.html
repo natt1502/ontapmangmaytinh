@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <title>Trắc nghiệm Mạng máy tính - Tự động kiểm tra từng câu</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background: #eef2f7;
+            margin: 0;
+            padding: 16px;
+            font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .main-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .main-tab {
+            background: #e0e4e8;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 60px;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+            transition: 0.2s;
+            min-height: 48px;
+        }
+        .main-tab.active {
+            background: #1e3a5f;
+            color: white;
+        }
+        .panel {
+            display: none;
+            background: white;
+            border-radius: 32px;
+            padding: 20px 24px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+        }
+        .panel.active-panel {
+            display: block;
+        }
+        h2 {
+            color: #1e2f4e;
+            font-size: 1.6rem;
+            margin-top: 0;
+            border-left: 6px solid #1e3a5f;
+            padding-left: 18px;
+        }
+        .sub {
+            color: #2c3e66;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            padding-left: 24px;
+        }
+        .chapter-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0 16px;
+        }
+        .chap-btn {
+            background: #e9ecef;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .chap-btn.active {
+            background: #1e3a5f;
+            color: white;
+        }
+        .stats {
+            background: #eef2fa;
+            padding: 10px 18px;
+            border-radius: 28px;
+            margin: 16px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .stats span {
+            font-weight: 500;
+        }
+        button {
+            background: #1e3a5f;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+            min-height: 44px;
+        }
+        button.reset {
+            background: #b02a37;
+        }
+        .question-card {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 24px;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+        }
+        .question-text {
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 14px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: #f8f9fa;
+            padding: 10px 16px;
+            border-radius: 60px;
+            cursor: pointer;
+            border: 1px solid #e2e6ea;
+        }
+        .option:hover {
+            background: #e9ecef;
+        }
+        .option input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            margin: 0;
+        }
+        .feedback {
+            margin-top: 14px;
+            padding: 10px 14px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        .correct-feedback { background: #d1e7dd; color: #0a3622; }
+        .wrong-feedback { background: #f8d7da; color: #842029; }
+        .neutral { background: #cfe2ff; color: #084298; }
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.75rem;
+            color: #6c757d;
+            padding: 10px;
+        }
+        @media (max-width: 700px) {
+            body { padding: 12px; }
+            .panel { padding: 16px; }
+            h2 { font-size: 1.3rem; }
+            .main-tab { padding: 10px 12px; font-size: 0.9rem; }
+            .stats { flex-direction: column; align-items: stretch; }
+            button { flex: 1; text-align: center; }
+            .chap-btn { font-size: 0.75rem; padding: 6px 12px; }
+            .question-text { font-size: 0.95rem; }
+            .option { padding: 8px 12px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="main-tabs">
+        <button class="main-tab active" data-panel="panel45">📘 45 câu (giảng viên)</button>
+        <button class="main-tab" data-panel="panel100">📚 100 câu (6 chương)</button>
+    </div>
+
+    <div id="panel45" class="panel active-panel">
+        <h2>📖 45 câu – Tự động kiểm tra khi chọn đáp án</h2>
+        <div class="sub">✅ Chọn một đáp án → xem ngay đúng/sai + giải thích</div>
+        <div class="stats">
+            <span id="score45">📊 Đã chọn: 0/45</span>
+            <button class="reset" id="reset45">🔄 Làm lại tất cả câu</button>
+        </div>
+        <div id="questions45Container"></div>
+    </div>
+
+    <div id="panel100" class="panel">
+        <h2>📚 100 câu theo chương (tự động kiểm tra)</h2>
+        <div class="chapter-tabs" id="chapterTabs100"></div>
+        <div class="stats">
+            <span id="score100">📊 Chương 1: 0/0</span>
+            <button class="reset" id="reset100">🔄 Làm lại chương này</button>
+        </div>
+        <div id="questions100Container"></div>
+    </div>
+    <footer>📱 Chọn đáp án bất kỳ – kết quả hiện ngay lập tức, giúp bạn học nhanh và nhớ lâu.</footer>
+</div>
+
+<script>
+    // ==================== 45 CÂU (GIẢNG VIÊN) ====================
+    const questions45 = [
+        { id:1, text:"Lệnh nào được sử dụng để kiểm tra kết nối mạng giữa hai thiết bị?", options:["ipconfig","ping","tracert","netstat"], answer:"B", explanation:"ping gửi ICMP echo request và nhận echo reply." },
+        { id:2, text:"Lệnh nào kiểm tra đường đi của gói tin?", options:["ping","tracert","netstat","ipconfig"], answer:"B", explanation:"tracert hiển thị từng hop (router)." },
+        { id:3, text:"Lệnh ipconfig dùng để?", options:["Kiểm tra kết nối","Hiển thị cấu hình IP","Kiểm tra port","Kiểm tra TCP"], answer:"B", explanation:"ipconfig hiển thị địa chỉ IPv4, subnet mask, gateway." },
+        { id:4, text:"Lệnh netstat dùng để?", options:["Kiểm tra đường đi","Kiểm tra các kết nối TCP","Kiểm tra IP","Kiểm tra MAC"], answer:"B", explanation:"netstat hiển thị bảng kết nối TCP/UDP." },
+        { id:5, text:"Lệnh nslookup dùng để?", options:["Kiểm tra DNS","Kiểm tra ping","Kiểm tra route","Cấu hình IP"], answer:"A", explanation:"nslookup truy vấn DNS server." },
+        { id:6, text:"Giao thức nào đảm bảo truyền dữ liệu tin cậy?", options:["UDP","TCP","IP","ARP"], answer:"B", explanation:"TCP có ACK, truyền lại, kiểm soát luồng." },
+        { id:7, text:"UDP thường dùng cho ứng dụng nào?", options:["Gửi email","Truyền file","Streaming video","Truy cập web"], answer:"C", explanation:"UDP nhanh, phù hợp streaming, VoIP." },
+        { id:8, text:"Đặc điểm nào thuộc về TCP?", options:["Không đảm bảo tin cậy","Có thiết lập kết nối","Không ACK","Nhanh nhất"], answer:"B", explanation:"TCP hướng kết nối, cần bắt tay 3 bước." },
+        { id:9, text:"Đặc điểm nào KHÔNG thuộc UDP?", options:["Không ACK","Truyền nhanh","Không kết nối","Có cơ chế xác nhận"], answer:"D", explanation:"UDP không có cơ chế xác nhận." },
+        { id:10, text:"Đặc điểm nào KHÔNG thuộc TCP?", options:["Đảm bảo tin cậy","Truyền theo thứ tự","Kiểm soát lỗi","Tốc độ tối đa"], answer:"D", explanation:"TCP có độ tin cậy nhưng không phải lúc nào cũng đạt tốc độ tối đa." },
+        { id:11, text:"Mô hình TCP/IP có mấy lớp?", options:["7","5","4","3"], answer:"C", explanation:"TCP/IP gồm 4 lớp: Application, Transport, Internet, Network Access." },
+        { id:12, text:"Lớp Presentation có chức năng chính?", options:["Định dạng dữ liệu","Định tuyến","Kết nối","Truyền tin cậy"], answer:"A", explanation:"Mã hóa, nén, chuyển đổi định dạng." },
+        { id:13, text:"Giao thức nào KHÔNG thuộc lớp ứng dụng?", options:["HTTP","FTP","DNS","TCP"], answer:"D", explanation:"TCP thuộc lớp giao vận." },
+        { id:14, text:"Cổng 80 dùng cho giao thức nào?", options:["FTP","HTTP","SMTP","DNS"], answer:"B", explanation:"HTTP dùng cổng 80." },
+        { id:15, text:"Giao thức gửi email?", options:["DNS","SMTP","FTP","HTTP"], answer:"B", explanation:"SMTP gửi email." },
+        { id:16, text:"DHCP có chức năng?", options:["Phân giải tên","Cấp phát IP tự động","Gửi email","Truyền file"], answer:"B", explanation:"DHCP tự động gán IP, subnet mask, gateway." },
+        { id:17, text:"ARP dùng để làm gì?", options:["Phân giải tên","IP → MAC","Gửi email","Web"], answer:"B", explanation:"ARP tìm địa chỉ MAC từ IP." },
+        { id:18, text:"Địa chỉ IP nguồn đại diện cho?", options:["Thiết bị nhận","Thiết bị gửi","Router","Server"], answer:"B", explanation:"IP nguồn là nơi khởi tạo gói tin." },
+        { id:19, text:"Unicast là hình thức truyền?", options:["1-1","1-n","n-1","Broadcast"], answer:"A", explanation:"Một gửi một." },
+        { id:20, text:"Encapsulation là gì?", options:["Mã hóa","Đóng gói dữ liệu","Truyền","Giải mã"], answer:"B", explanation:"Thêm header/trailer qua các tầng." },
+        { id:21, text:"Wi-Fi là tên khác của mạng?", options:["WPAN","WLAN","WMAN","WWAN"], answer:"B", explanation:"Wi-Fi là WLAN chuẩn 802.11." },
+        { id:22, text:"Chuẩn IEEE nào cho WLAN?", options:["802.3","802.11","802.15","802.16"], answer:"B", explanation:"IEEE 802.11." },
+        { id:23, text:"Bluetooth theo chuẩn nào?", options:["802.11","802.15","802.3","802.20"], answer:"B", explanation:"IEEE 802.15." },
+        { id:24, text:"Tần số Wi-Fi phổ biến?", options:["2.4GHz & 5GHz","900MHz","3.5GHz","60GHz"], answer:"A", explanation:"2.4 GHz và 5 GHz." },
+        { id:25, text:"Điện toán đám mây là gì?", options:["Kết nối thiết bị","Cung cấp tài nguyên qua Internet","Lưu trữ cục bộ","Mạng LAN"], answer:"B", explanation:"Cloud cấp tài nguyên theo nhu cầu qua Internet." },
+        { id:26, text:"SaaS cung cấp?", options:["Phần mềm hoàn chỉnh","Nền tảng","Hạ tầng","Lưu trữ"], answer:"A", explanation:"Software as a Service." },
+        { id:27, text:"PaaS cung cấp?", options:["Phần mềm","Nền tảng phát triển","Máy chủ ảo","Mạng"], answer:"B", explanation:"Platform as a Service." },
+        { id:28, text:"Hybrid Cloud là kết hợp?", options:["IaaS+PaaS","Public+Private","PaaS+SaaS","LAN+WAN"], answer:"B", explanation:"Kết hợp công cộng và riêng." },
+        { id:29, text:"Private Cloud đặc điểm?", options:["Dùng chung","Riêng tổ chức","Kết hợp","Miễn phí"], answer:"B", explanation:"Dành riêng một tổ chức." },
+        { id:30, text:"Quản lý định danh trong Cloud là?", options:["Theo dõi","Lưu trữ","Kiểm soát truy cập","Mã hóa"], answer:"C", explanation:"Xác thực và phân quyền." },
+        { id:31, text:"Các vấn đề bảo mật Cloud gồm?", options:["Dữ liệu","Pháp lý","Sẵn sàng","Tất cả"], answer:"D", explanation:"Nhiều rủi ro." },
+        { id:32, text:"Bảo mật Cloud hiệu quả cần?", options:["Chặn mọi tấn công","Không quan tâm rủi ro","Phòng thủ phù hợp","Chỉ mã hóa"], answer:"C", explanation:"Nhiều lớp bảo vệ." },
+        { id:33, text:"Cloud Security là?", options:["Diệt virus","Bảo mật nội bộ","Bảo vệ dữ liệu cloud","Bảo mật PC"], answer:"C", explanation:"Bảo vệ dữ liệu, ứng dụng trên cloud." },
+        { id:34, text:"TCP điều khiển luồng bằng?", options:["ACK","Window Size","Port","Checksum"], answer:"B", explanation:"Window Size cho biết bộ đệm còn trống." },
+        { id:35, text:"Trường TCP xác nhận dữ liệu?", options:["Port","Sequence","Acknowledgment","Window"], answer:"C", explanation:"Acknowledgment Number." },
+        { id:36, text:"Subnet mask dùng để?", options:["Mã hóa","Xác định mạng/host","Kiểm tra kết nối","Tăng tốc"], answer:"B", explanation:"Phân biệt network và host." },
+        { id:37, text:"Công thức số subnet?", options:["2^host","2^bit mượn","2^IP","2^port"], answer:"B", explanation:"2^(số bit mượn)." },
+        { id:38, text:"Lệnh ping dùng để?", options:["Kiểm tra đường đi","Kiểm tra kết nối","Kiểm tra port","DNS"], answer:"B", explanation:"ping kiểm tra kết nối." },
+        { id:39, text:"Lệnh tracert dùng để?", options:["Kiểm tra IP","Kiểm tra đường đi","Port","MAC"], answer:"B", explanation:"tracert xem đường đi." },
+        { id:40, text:"Lệnh ipconfig dùng để?", options:["Kiểm tra kết nối","Hiển thị cấu hình IP","Port","TCP"], answer:"B", explanation:"Hiển thị IP, mask, gateway." },
+        { id:41, text:"Lệnh netstat dùng để?", options:["Đường đi","Các kết nối TCP","IP","MAC"], answer:"B", explanation:"Hiển thị kết nối mạng." },
+        { id:42, text:"DNS chức năng?", options:["IP→MAC","Tên miền→IP","Gửi email","Truyền file"], answer:"B", explanation:"Phân giải tên miền." },
+        { id:43, text:"DHCP chức năng?", options:["Phân giải tên","Cấp IP tự động","Gửi email","Truyền file"], answer:"B", explanation:"Cấp phát IP động." },
+        { id:44, text:"Đặc điểm của TCP?", options:["Không ACK","Không tin cậy","Có ACK","Không thứ tự"], answer:"C", explanation:"Có cơ chế xác nhận." },
+        { id:45, text:"Đặc điểm của UDP?", options:["Có ACK","Tin cậy","Không kết nối","Kiểm soát lỗi mạnh"], answer:"C", explanation:"Không cần thiết lập kết nối." }
+    ];
+
+    // ==================== 100 CÂU (45 + 55) ====================
+    const extra = [
+        { text:"Thiết bị nào hoạt động ở lớp 2 (Data Link) và dùng địa chỉ MAC?", options:["Router","Switch","Hub","Repeater"], answer:"B", chapter:1, explanation:"Switch chuyển frame dựa trên MAC." },
+        { text:"Router hoạt động ở lớp nào của OSI?", options:["Lớp 1","Lớp 2","Lớp 3","Lớp 4"], answer:"C", chapter:1, explanation:"Lớp Network (IP)." },
+        { text:"Topology hình sao có đặc điểm?", options:["Vòng","Kết nối trung tâm","Bus chung","Đầy đủ"], answer:"B", chapter:1, explanation:"Nối vào switch/hub." },
+        { text:"Mạng hội tụ cho phép?", options:["Chỉ dữ liệu","Dữ liệu+thoại+video","Chỉ không dây","Chỉ cáp quang"], answer:"B", chapter:1, explanation:"Truyền đồng thời voice, video, data." },
+        { text:"Kháng lỗi đạt được nhờ?", options:["Một đường","Nhiều đường dự phòng","Tăng băng thông","Dùng switch"], answer:"B", chapter:1, explanation:"Dự phòng đường truyền." },
+        { text:"Lớp Network (OSI) tương ứng lớp nào trong TCP/IP?", options:["Application","Transport","Internet","Network Access"], answer:"C", chapter:2, explanation:"Lớp Internet." },
+        { text:"PDU của lớp Transport?", options:["Frame","Packet","Segment","Bit"], answer:"C", chapter:2, explanation:"Segment (TCP) hoặc datagram (UDP)." },
+        { text:"PDU của lớp Network?", options:["Frame","Packet","Segment","Bit"], answer:"B", chapter:2, explanation:"Packet." },
+        { text:"Cáp UTP dùng đầu nối?", options:["RJ-11","RJ-45","BNC","LC"], answer:"B", chapter:2, explanation:"RJ-45." },
+        { text:"Ưu điểm cáp quang?", options:["Chống nhiễu kém","Truyền xa, băng thông cao","Giá rẻ","Dễ uốn"], answer:"B", chapter:2, explanation:"Suy hao thấp." },
+        { text:"Cáp chéo dùng để?", options:["PC-Switch","Switch-Router","PC-PC","PC-Modem"], answer:"C", chapter:2, explanation:"Nối hai thiết bị cùng loại." },
+        { text:"Cổng HTTPS?", options:["80","443","8080","8443"], answer:"B", chapter:3, explanation:"HTTPS cổng 443." },
+        { text:"SMTP cổng?", options:["25","110","143","53"], answer:"A", chapter:3, explanation:"SMTP cổng 25." },
+        { text:"DNS cổng?", options:["53","67","68","161"], answer:"A", chapter:3, explanation:"DNS cổng 53." },
+        { text:"Chuẩn 802.11a băng tần?", options:["2.4GHz","5GHz","900MHz","6GHz"], answer:"B", chapter:4, explanation:"5 GHz." },
+        { text:"CSMA/CA dùng trong?", options:["Ethernet có dây","WLAN","Token ring","FDDI"], answer:"B", chapter:4, explanation:"Wi-Fi." },
+        { text:"POP3 cổng?", options:["110","143","993","995"], answer:"A", chapter:5, explanation:"POP3 cổng 110." },
+        { text:"IMAP cổng?", options:["110","143","25","587"], answer:"B", chapter:5, explanation:"IMAP cổng 143." },
+        { text:"FTP dùng giao thức?", options:["TCP","UDP","ICMP","IGMP"], answer:"A", chapter:5, explanation:"FTP dùng TCP." },
+        { text:"SSH an toàn hơn Telnet nhờ?", options:["Mã hóa","Tốc độ","Cổng khác","Không mật khẩu"], answer:"A", chapter:5, explanation:"SSH mã hóa phiên." },
+        { text:"Thứ tự DHCP?", options:["DISCOVER→OFFER→REQUEST→ACK","DISCOVER→REQUEST→OFFER→ACK","REQUEST→OFFER→ACK","OFFER→DISCOVER→REQUEST"], answer:"A", chapter:5, explanation:"4 bước cơ bản." },
+        { text:"IaaS cung cấp?", options:["Máy ảo, lưu trữ","Phần mềm","Nền tảng","Email"], answer:"A", chapter:6, explanation:"Hạ tầng ảo hóa." },
+        { text:"Mạng /26 có bao nhiêu host?", options:["62","126","30","14"], answer:"A", chapter:6, explanation:"2^6 - 2 = 62." },
+        { text:"Địa chỉ loopback?", options:["127.0.0.1","0.0.0.0","255.255.255.255","224.0.0.1"], answer:"A", chapter:6, explanation:"127.0.0.1." },
+        { text:"NAT dùng để?", options:["Private→Public","Tên→IP","Cấp IP","Định tuyến"], answer:"A", chapter:6, explanation:"Chuyển địa chỉ private ra public." },
+        { text:"Địa chỉ broadcast cục bộ?", options:["255.255.255.255","0.0.0.0","127.0.0.1","224.0.0.1"], answer:"A", chapter:6, explanation:"255.255.255.255." }
+    ];
+    // Lấy thêm từ 45 câu để đủ 55 câu bổ sung
+    const extraFrom45 = questions45.slice(0, 29).map((q, idx) => ({ ...q, chapter: (idx % 6) + 1 }));
+    const allExtra = [...extra, ...extraFrom45];
+    const base45WithChapter = questions45.map((q, idx) => ({ ...q, chapter: (idx % 6) + 1 }));
+    const full100 = [...base45WithChapter, ...allExtra];
+    for (let i=0; i<full100.length; i++) full100[i].id = i+1;
+
+    // ================ LOGIC TỰ ĐỘNG KIỂM TRA KHI CHỌN ================
+    let answers45 = new Array(45).fill(null);
+    let answers100 = new Array(100).fill(null);
+    let currentChapter = 1;
+
+    // Hàm kiểm tra 1 câu (cập nhật feedback)
+    function checkSingleQuestion(questionObj, selectedAnswer, fbElementId) {
+        const fbDiv = document.getElementById(fbElementId);
+        if (!selectedAnswer) {
+            fbDiv.innerHTML = `<span class="feedback neutral">⚠️ Chưa chọn đáp án. Đáp án đúng: ${questionObj.answer}. Giải thích: ${questionObj.explanation}</span>`;
+            return false;
+        }
+        if (selectedAnswer === questionObj.answer) {
+            fbDiv.innerHTML = `<span class="feedback correct-feedback">✅ Đúng! Giải thích: ${questionObj.explanation}</span>`;
+            return true;
+        } else {
+            fbDiv.innerHTML = `<span class="feedback wrong-feedback">❌ Sai. Đáp án đúng: ${questionObj.answer}. Giải thích: ${questionObj.explanation}</span>`;
+            return false;
+        }
+    }
+
+    // Render 45 câu (mỗi câu có radio + sự kiện onchange tự động kiểm tra)
+    function render45() {
+        let html = '';
+        questions45.forEach((q, idx) => {
+            let selected = answers45[idx] || '';
+            html += `<div class="question-card">
+                <div class="question-text">${q.id}. ${q.text}</div>
+                <div class="options">
+                    ${q.options.map((opt, oi) => {
+                        let letter = String.fromCharCode(65+oi);
+                        let checked = (selected === letter) ? 'checked' : '';
+                        return `<label class="option">
+                            <input type="radio" name="q45_${idx}" value="${letter}" ${checked} onchange="onSelect45(${idx}, '${letter}')">
+                            <span>${letter}. ${opt}</span>
+                        </label>`;
+                    }).join('')}
+                </div>
+                <div id="fb45_${idx}" class="feedback"></div>
+            </div>`;
+        });
+        document.getElementById('questions45Container').innerHTML = html;
+        // Khôi phục feedback cũ nếu có (khi reset cần xóa)
+        for (let i=0; i<questions45.length; i++) {
+            if (answers45[i] !== null) {
+                let q = questions45[i];
+                let fbDiv = document.getElementById(`fb45_${i}`);
+                if (fbDiv) {
+                    if (answers45[i] === q.answer) fbDiv.innerHTML = `<span class="feedback correct-feedback">✅ Đúng! Giải thích: ${q.explanation}</span>`;
+                    else fbDiv.innerHTML = `<span class="feedback wrong-feedback">❌ Sai. Đáp án đúng: ${q.answer}. Giải thích: ${q.explanation}</span>`;
+                }
+            }
+        }
+        updateScore45();
+    }
+    window.onSelect45 = function(idx, val) {
+        answers45[idx] = val;
+        let q = questions45[idx];
+        checkSingleQuestion(q, val, `fb45_${idx}`);
+        updateScore45();
+    };
+    function updateScore45() {
+        let answered = answers45.filter(a => a !== null).length;
+        document.getElementById('score45').innerHTML = `📊 Đã chọn: ${answered}/45 câu`;
+    }
+    function reset45() {
+        answers45.fill(null);
+        render45();
+        // Xóa tất cả feedback (render lại sẽ xóa)
+    }
+
+    // Render 100 câu theo chương (tự động kiểm tra khi chọn)
+    function render100() {
+        let filtered = full100.filter(q => q.chapter === currentChapter);
+        let html = '';
+        filtered.forEach(q => {
+            let globalIdx = full100.findIndex(qq => qq.id === q.id);
+            let selected = answers100[globalIdx] || '';
+            html += `<div class="question-card">
+                <div class="question-text">${q.id}. ${q.text}</div>
+                <div class="options">
+                    ${q.options.map((opt, oi) => {
+                        let letter = String.fromCharCode(65+oi);
+                        let checked = (selected === letter) ? 'checked' : '';
+                        return `<label class="option">
+                            <input type="radio" name="q100_${q.id}" value="${letter}" ${checked} onchange="onSelect100(${globalIdx}, '${letter}')">
+                            <span>${letter}. ${opt}</span>
+                        </label>`;
+                    }).join('')}
+                </div>
+                <div id="fb100_${q.id}" class="feedback"></div>
+            </div>`;
+        });
+        document.getElementById('questions100Container').innerHTML = html;
+        // Khôi phục feedback
+        filtered.forEach(q => {
+            let globalIdx = full100.findIndex(qq => qq.id === q.id);
+            let selected = answers100[globalIdx];
+            if (selected) {
+                let fbDiv = document.getElementById(`fb100_${q.id}`);
+                if (fbDiv) {
+                    if (selected === q.answer) fbDiv.innerHTML = `<span class="feedback correct-feedback">✅ Đúng! Giải thích: ${q.explanation}</span>`;
+                    else fbDiv.innerHTML = `<span class="feedback wrong-feedback">❌ Sai. Đáp án đúng: ${q.answer}. Giải thích: ${q.explanation}</span>`;
+                }
+            }
+        });
+        updateScore100();
+    }
+    window.onSelect100 = function(globalIdx, val) {
+        answers100[globalIdx] = val;
+        let q = full100[globalIdx];
+        checkSingleQuestion(q, val, `fb100_${q.id}`);
+        updateScore100();
+    };
+    function updateScore100() {
+        let filtered = full100.filter(q => q.chapter === currentChapter);
+        let answered = filtered.filter(q => answers100[full100.findIndex(qq => qq.id === q.id)] !== null).length;
+        document.getElementById('score100').innerHTML = `📊 Chương ${currentChapter}: đã chọn ${answered}/${filtered.length} câu`;
+    }
+    function reset100() {
+        let filtered = full100.filter(q => q.chapter === currentChapter);
+        filtered.forEach(q => {
+            let idx = full100.findIndex(qq => qq.id === q.id);
+            answers100[idx] = null;
+        });
+        render100();
+    }
+    function renderChapterTabs() {
+        let names = {1:"Ch1: Tổng quan",2:"Ch2: OSI/TCP",3:"Ch3: TCP/UDP",4:"Ch4: WLAN",5:"Ch5: Dịch vụ",6:"Ch6: Cloud"};
+        let container = document.getElementById('chapterTabs100');
+        container.innerHTML = '';
+        for (let i=1; i<=6; i++) {
+            let btn = document.createElement('button');
+            btn.textContent = names[i];
+            btn.classList.add('chap-btn');
+            if (i === currentChapter) btn.classList.add('active');
+            btn.onclick = () => { currentChapter = i; renderChapterTabs(); render100(); };
+            container.appendChild(btn);
+        }
+    }
+    function switchPanel(panelId) {
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active-panel'));
+        document.getElementById(panelId).classList.add('active-panel');
+        document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+        document.querySelector(`.main-tab[data-panel="${panelId}"]`).classList.add('active');
+        if (panelId === 'panel45') render45();
+        if (panelId === 'panel100') render100();
+    }
+    document.querySelectorAll('.main-tab').forEach(tab => tab.addEventListener('click', () => switchPanel(tab.dataset.panel)));
+    render45();
+    renderChapterTabs();
+    render100();
+    document.getElementById('reset45').addEventListener('click', reset45);
+    document.getElementById('reset100').addEventListener('click', reset100);
+</script>
+</body>
+</html>
