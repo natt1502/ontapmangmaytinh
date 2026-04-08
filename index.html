@@ -116,17 +116,21 @@
             border: 1px solid #dee2e6;
             border-radius: 24px;
             padding: 18px 20px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;          /* tăng khoảng cách giữa các câu */
+            display: flex;
+            flex-direction: column;
         }
         .question-text {
             font-weight: 700;
             font-size: 1.05rem;
             margin-bottom: 14px;
+            word-break: break-word;
         }
         .options {
             display: flex;
             flex-direction: column;
             gap: 12px;
+            margin-bottom: 8px;
         }
         .option {
             display: flex;
@@ -137,6 +141,7 @@
             border-radius: 60px;
             cursor: pointer;
             border: 1px solid #e2e6ea;
+            word-break: break-word;
         }
         .option:hover {
             background: #e9ecef;
@@ -146,13 +151,16 @@
             height: 20px;
             cursor: pointer;
             margin: 0;
+            flex-shrink: 0;
         }
         .feedback {
-            margin-top: 14px;
+            margin-top: 16px;            /* tạo khoảng cách rõ ràng với options */
             padding: 10px 14px;
             border-radius: 20px;
             font-size: 0.9rem;
             line-height: 1.4;
+            word-break: break-word;
+            clear: both;
         }
         .correct-feedback { background: #d1e7dd; color: #0a3622; }
         .wrong-feedback { background: #f8d7da; color: #842029; }
@@ -173,7 +181,9 @@
             button { flex: 1; text-align: center; }
             .chap-btn { font-size: 0.75rem; padding: 6px 12px; }
             .question-text { font-size: 0.95rem; }
-            .option { padding: 8px 12px; }
+            .option { padding: 8px 12px; gap: 10px; }
+            .feedback { margin-top: 14px; }
+            .question-card { margin-bottom: 20px; }
         }
     </style>
 </head>
@@ -285,7 +295,6 @@
         { text:"NAT dùng để?", options:["Private→Public","Tên→IP","Cấp IP","Định tuyến"], answer:"A", chapter:6, explanation:"Chuyển địa chỉ private ra public." },
         { text:"Địa chỉ broadcast cục bộ?", options:["255.255.255.255","0.0.0.0","127.0.0.1","224.0.0.1"], answer:"A", chapter:6, explanation:"255.255.255.255." }
     ];
-    // Lấy thêm từ 45 câu để đủ 55 câu bổ sung
     const extraFrom45 = questions45.slice(0, 29).map((q, idx) => ({ ...q, chapter: (idx % 6) + 1 }));
     const allExtra = [...extra, ...extraFrom45];
     const base45WithChapter = questions45.map((q, idx) => ({ ...q, chapter: (idx % 6) + 1 }));
@@ -297,7 +306,6 @@
     let answers100 = new Array(100).fill(null);
     let currentChapter = 1;
 
-    // Hàm kiểm tra 1 câu (cập nhật feedback)
     function checkSingleQuestion(questionObj, selectedAnswer, fbElementId) {
         const fbDiv = document.getElementById(fbElementId);
         if (!selectedAnswer) {
@@ -313,7 +321,6 @@
         }
     }
 
-    // Render 45 câu (mỗi câu có radio + sự kiện onchange tự động kiểm tra)
     function render45() {
         let html = '';
         questions45.forEach((q, idx) => {
@@ -334,7 +341,6 @@
             </div>`;
         });
         document.getElementById('questions45Container').innerHTML = html;
-        // Khôi phục feedback cũ nếu có (khi reset cần xóa)
         for (let i=0; i<questions45.length; i++) {
             if (answers45[i] !== null) {
                 let q = questions45[i];
@@ -360,10 +366,8 @@
     function reset45() {
         answers45.fill(null);
         render45();
-        // Xóa tất cả feedback (render lại sẽ xóa)
     }
 
-    // Render 100 câu theo chương (tự động kiểm tra khi chọn)
     function render100() {
         let filtered = full100.filter(q => q.chapter === currentChapter);
         let html = '';
@@ -386,7 +390,6 @@
             </div>`;
         });
         document.getElementById('questions100Container').innerHTML = html;
-        // Khôi phục feedback
         filtered.forEach(q => {
             let globalIdx = full100.findIndex(qq => qq.id === q.id);
             let selected = answers100[globalIdx];
