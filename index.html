@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-    <title>Trắc nghiệm Mạng máy tính - Đầy đủ 45+100 câu</title>
+    <title>Trắc nghiệm Mạng máy tính - 120 câu (49 cơ bản + 71 theo chương)</title>
     <style>
         * {
             box-sizing: border-box;
@@ -12,11 +12,11 @@
         }
         body {
             background: #eef2f7;
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
             padding: 16px;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
         }
         .main-tabs {
@@ -110,8 +110,6 @@
             border-radius: 24px;
             padding: 20px;
             margin-bottom: 40px;
-            display: flex;
-            flex-direction: column;
         }
         .question-text {
             font-weight: 700;
@@ -137,7 +135,6 @@
         .option input {
             width: 20px;
             height: 20px;
-            flex-shrink: 0;
             margin: 0;
         }
         .feedback {
@@ -146,10 +143,6 @@
             border-radius: 20px;
             font-size: 0.9rem;
             line-height: 1.4;
-            clear: both;
-            display: block;
-            width: 100%;
-            word-break: break-word;
         }
         .correct-feedback { background: #d1e7dd; color: #0a3622; }
         .wrong-feedback { background: #f8d7da; color: #842029; }
@@ -161,155 +154,210 @@
             color: #6c757d;
         }
         @media (max-width: 600px) {
-            body { padding: 12px; }
             .panel { padding: 16px; }
             .question-card { padding: 16px; margin-bottom: 30px; }
-            .question-text { font-size: 0.95rem; }
             .option { padding: 10px 12px; }
-            .feedback { font-size: 0.8rem; padding: 10px 12px; margin-top: 16px; }
-            .main-tab { padding: 8px 12px; font-size: 0.9rem; }
         }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="main-tabs">
-        <button class="main-tab active" data-panel="panel45">📘 45 câu (giảng viên)</button>
-        <button class="main-tab" data-panel="panel100">📚 100 câu (6 chương)</button>
+        <button class="main-tab active" data-panel="panelBasic">📘 49 câu cơ bản</button>
+        <button class="main-tab" data-panel="panelChapter">📚 71 câu theo chương</button>
     </div>
 
-    <div id="panel45" class="panel active-panel">
-        <h2>📖 45 câu – Tự động kiểm tra</h2>
-        <div class="sub">✅ Chọn đáp án → xem giải thích ngay, không bị che</div>
+    <div id="panelBasic" class="panel active-panel">
+        <h2>📖 49 câu trắc nghiệm nền tảng</h2>
+        <div class="sub">✅ Dựa trên nội dung 49 câu đầu từ file QUIZ_NMMMT.docx</div>
         <div class="stats">
-            <span id="score45">📊 Đã chọn: 0/45</span>
-            <button class="reset" id="reset45">🔄 Làm lại tất cả</button>
+            <span id="scoreBasic">📊 Đã chọn: 0/49</span>
+            <button class="reset" id="resetBasic">🔄 Làm lại tất cả</button>
         </div>
-        <div id="questions45Container"></div>
+        <div id="questionsBasicContainer"></div>
     </div>
 
-    <div id="panel100" class="panel">
-        <h2>📚 100 câu theo chương</h2>
-        <div class="chapter-tabs" id="chapterTabs100"></div>
+    <div id="panelChapter" class="panel">
+        <h2>📚 71 câu mở rộng – theo chương (1→6)</h2>
+        <div class="chapter-tabs" id="chapterTabs"></div>
         <div class="stats">
-            <span id="score100">📊 Chương 1: 0/0</span>
-            <button class="reset" id="reset100">🔄 Làm lại chương</button>
+            <span id="scoreChapter">📊 Chương 1: 0/0</span>
+            <button class="reset" id="resetChapter">🔄 Làm lại chương</button>
         </div>
-        <div id="questions100Container"></div>
+        <div id="questionsChapterContainer"></div>
     </div>
-    <footer>📱 Mỗi câu có khoảng cách lớn, giải thích nằm riêng, không bị đè lên đáp án.</footer>
+    <footer>📱 Chọn đáp án → tự động kiểm tra ngay, hiển thị giải thích chi tiết.</footer>
 </div>
 
 <script>
-    // ==================== ĐẦY ĐỦ 45 CÂU (NHƯ BẠN ĐÃ CÓ) ====================
-    const questions45 = [
-        { id:1, text:"Lệnh nào được sử dụng để kiểm tra kết nối mạng giữa hai thiết bị?", options:["ipconfig","ping","tracert","netstat"], answer:"B", explanation:"ping gửi ICMP echo request và nhận echo reply." },
-        { id:2, text:"Lệnh nào kiểm tra đường đi của gói tin?", options:["ping","tracert","netstat","ipconfig"], answer:"B", explanation:"tracert hiển thị từng hop (router)." },
-        { id:3, text:"Lệnh ipconfig dùng để?", options:["Kiểm tra kết nối","Hiển thị cấu hình IP","Kiểm tra port","Kiểm tra TCP"], answer:"B", explanation:"ipconfig hiển thị địa chỉ IPv4, subnet mask, gateway." },
-        { id:4, text:"Lệnh netstat dùng để?", options:["Kiểm tra đường đi","Kiểm tra các kết nối TCP","Kiểm tra IP","Kiểm tra MAC"], answer:"B", explanation:"netstat hiển thị bảng kết nối TCP/UDP." },
-        { id:5, text:"Lệnh nslookup dùng để?", options:["Kiểm tra DNS","Kiểm tra ping","Kiểm tra route","Cấu hình IP"], answer:"A", explanation:"nslookup truy vấn DNS server." },
-        { id:6, text:"Giao thức nào đảm bảo truyền dữ liệu tin cậy?", options:["UDP","TCP","IP","ARP"], answer:"B", explanation:"TCP có ACK, truyền lại, kiểm soát luồng." },
-        { id:7, text:"UDP thường dùng cho ứng dụng nào?", options:["Gửi email","Truyền file","Streaming video","Truy cập web"], answer:"C", explanation:"UDP nhanh, phù hợp streaming, VoIP." },
-        { id:8, text:"Đặc điểm nào thuộc về TCP?", options:["Không đảm bảo tin cậy","Có thiết lập kết nối","Không ACK","Nhanh nhất"], answer:"B", explanation:"TCP hướng kết nối, cần bắt tay 3 bước." },
-        { id:9, text:"Đặc điểm nào KHÔNG thuộc UDP?", options:["Không ACK","Truyền nhanh","Không kết nối","Có cơ chế xác nhận"], answer:"D", explanation:"UDP không có cơ chế xác nhận." },
-        { id:10, text:"Đặc điểm nào KHÔNG thuộc TCP?", options:["Đảm bảo tin cậy","Truyền theo thứ tự","Kiểm soát lỗi","Tốc độ tối đa"], answer:"D", explanation:"TCP có độ tin cậy nhưng không phải lúc nào cũng đạt tốc độ tối đa." },
-        { id:11, text:"Mô hình TCP/IP có mấy lớp?", options:["7","5","4","3"], answer:"C", explanation:"TCP/IP gồm 4 lớp: Application, Transport, Internet, Network Access." },
-        { id:12, text:"Lớp Presentation có chức năng chính?", options:["Định dạng dữ liệu","Định tuyến","Kết nối","Truyền tin cậy"], answer:"A", explanation:"Mã hóa, nén, chuyển đổi định dạng." },
-        { id:13, text:"Giao thức nào KHÔNG thuộc lớp ứng dụng?", options:["HTTP","FTP","DNS","TCP"], answer:"D", explanation:"TCP thuộc lớp giao vận." },
-        { id:14, text:"Cổng 80 dùng cho giao thức nào?", options:["FTP","HTTP","SMTP","DNS"], answer:"B", explanation:"HTTP dùng cổng 80." },
-        { id:15, text:"Giao thức gửi email?", options:["DNS","SMTP","FTP","HTTP"], answer:"B", explanation:"SMTP gửi email." },
-        { id:16, text:"DHCP có chức năng?", options:["Phân giải tên","Cấp phát IP tự động","Gửi email","Truyền file"], answer:"B", explanation:"DHCP tự động gán IP, subnet mask, gateway." },
-        { id:17, text:"ARP dùng để làm gì?", options:["Phân giải tên","IP → MAC","Gửi email","Web"], answer:"B", explanation:"ARP tìm địa chỉ MAC từ IP." },
-        { id:18, text:"Địa chỉ IP nguồn đại diện cho?", options:["Thiết bị nhận","Thiết bị gửi","Router","Server"], answer:"B", explanation:"IP nguồn là nơi khởi tạo gói tin." },
-        { id:19, text:"Unicast là hình thức truyền?", options:["1-1","1-n","n-1","Broadcast"], answer:"A", explanation:"Một gửi một." },
-        { id:20, text:"Encapsulation là gì?", options:["Mã hóa","Đóng gói dữ liệu","Truyền","Giải mã"], answer:"B", explanation:"Thêm header/trailer qua các tầng." },
-        { id:21, text:"Wi-Fi là tên khác của mạng?", options:["WPAN","WLAN","WMAN","WWAN"], answer:"B", explanation:"Wi-Fi là WLAN chuẩn 802.11." },
-        { id:22, text:"Chuẩn IEEE nào cho WLAN?", options:["802.3","802.11","802.15","802.16"], answer:"B", explanation:"IEEE 802.11." },
-        { id:23, text:"Bluetooth theo chuẩn nào?", options:["802.11","802.15","802.3","802.20"], answer:"B", explanation:"IEEE 802.15." },
-        { id:24, text:"Tần số Wi-Fi phổ biến?", options:["2.4GHz & 5GHz","900MHz","3.5GHz","60GHz"], answer:"A", explanation:"2.4 GHz và 5 GHz." },
-        { id:25, text:"Điện toán đám mây là gì?", options:["Kết nối thiết bị","Cung cấp tài nguyên qua Internet","Lưu trữ cục bộ","Mạng LAN"], answer:"B", explanation:"Cloud cấp tài nguyên theo nhu cầu qua Internet." },
-        { id:26, text:"SaaS cung cấp?", options:["Phần mềm hoàn chỉnh","Nền tảng","Hạ tầng","Lưu trữ"], answer:"A", explanation:"Software as a Service." },
-        { id:27, text:"PaaS cung cấp?", options:["Phần mềm","Nền tảng phát triển","Máy chủ ảo","Mạng"], answer:"B", explanation:"Platform as a Service." },
-        { id:28, text:"Hybrid Cloud là kết hợp?", options:["IaaS+PaaS","Public+Private","PaaS+SaaS","LAN+WAN"], answer:"B", explanation:"Kết hợp công cộng và riêng." },
-        { id:29, text:"Private Cloud đặc điểm?", options:["Dùng chung","Riêng tổ chức","Kết hợp","Miễn phí"], answer:"B", explanation:"Dành riêng một tổ chức." },
-        { id:30, text:"Quản lý định danh trong Cloud là?", options:["Theo dõi","Lưu trữ","Kiểm soát truy cập","Mã hóa"], answer:"C", explanation:"Xác thực và phân quyền." },
-        { id:31, text:"Các vấn đề bảo mật Cloud gồm?", options:["Dữ liệu","Pháp lý","Sẵn sàng","Tất cả"], answer:"D", explanation:"Nhiều rủi ro." },
-        { id:32, text:"Bảo mật Cloud hiệu quả cần?", options:["Chặn mọi tấn công","Không quan tâm rủi ro","Phòng thủ phù hợp","Chỉ mã hóa"], answer:"C", explanation:"Nhiều lớp bảo vệ." },
-        { id:33, text:"Cloud Security là?", options:["Diệt virus","Bảo mật nội bộ","Bảo vệ dữ liệu cloud","Bảo mật PC"], answer:"C", explanation:"Bảo vệ dữ liệu, ứng dụng trên cloud." },
-        { id:34, text:"TCP điều khiển luồng bằng?", options:["ACK","Window Size","Port","Checksum"], answer:"B", explanation:"Window Size cho biết bộ đệm còn trống." },
-        { id:35, text:"Trường TCP xác nhận dữ liệu?", options:["Port","Sequence","Acknowledgment","Window"], answer:"C", explanation:"Acknowledgment Number." },
-        { id:36, text:"Subnet mask dùng để?", options:["Mã hóa","Xác định mạng/host","Kiểm tra kết nối","Tăng tốc"], answer:"B", explanation:"Phân biệt network và host." },
-        { id:37, text:"Công thức số subnet?", options:["2^host","2^bit mượn","2^IP","2^port"], answer:"B", explanation:"2^(số bit mượn)." },
-        { id:38, text:"Lệnh ping dùng để?", options:["Kiểm tra đường đi","Kiểm tra kết nối","Kiểm tra port","DNS"], answer:"B", explanation:"ping kiểm tra kết nối." },
-        { id:39, text:"Lệnh tracert dùng để?", options:["Kiểm tra IP","Kiểm tra đường đi","Port","MAC"], answer:"B", explanation:"tracert xem đường đi." },
-        { id:40, text:"Lệnh ipconfig dùng để?", options:["Kiểm tra kết nối","Hiển thị cấu hình IP","Port","TCP"], answer:"B", explanation:"Hiển thị IP, mask, gateway." },
-        { id:41, text:"Lệnh netstat dùng để?", options:["Đường đi","Các kết nối TCP","IP","MAC"], answer:"B", explanation:"Hiển thị kết nối mạng." },
-        { id:42, text:"DNS chức năng?", options:["IP→MAC","Tên miền→IP","Gửi email","Truyền file"], answer:"B", explanation:"Phân giải tên miền." },
-        { id:43, text:"DHCP chức năng?", options:["Phân giải tên","Cấp IP tự động","Gửi email","Truyền file"], answer:"B", explanation:"Cấp phát IP động." },
-        { id:44, text:"Đặc điểm của TCP?", options:["Không ACK","Không tin cậy","Có ACK","Không thứ tự"], answer:"C", explanation:"Có cơ chế xác nhận." },
-        { id:45, text:"Đặc điểm của UDP?", options:["Có ACK","Tin cậy","Không kết nối","Kiểm soát lỗi mạnh"], answer:"C", explanation:"Không cần thiết lập kết nối." }
+    // ======================== TOÀN BỘ 120 CÂU TỪ FILE QUIZ_NMMMT.docx ========================
+    const allQuestions = [
+        { id:1, text:"Giao thức nào sau đây thuộc lớp giao vận và đảm bảo độ tin cậy trong truyền dữ liệu?", options:["UDP","TCP","ARP","IP"], answer:"B", explanation:"TCP (Transmission Control Protocol) hướng kết nối, có cơ chế ACK và truyền lại, đảm bảo tin cậy." },
+        { id:2, text:"Đơn vị dữ liệu của lớp giao vận (Transport Layer) là gì?", options:["Segment, Datagram","Bit","Frame","Packet"], answer:"A", explanation:"TCP dùng Segment, UDP dùng Datagram." },
+        { id:3, text:"UDP được sử dụng trong các ứng dụng nào sau đây?", options:["Truyền file lớn","Email","Streaming video","Truy cập web"], answer:"C", explanation:"UDP ưu tiên tốc độ, phù hợp streaming, VoIP." },
+        { id:4, text:"Đặc điểm nào sau đây KHÔNG phải của giao thức UDP?", options:["Tốc độ truyền nhanh","Ít trường bổ sung trong header","Thiết lập kết nối trước khi truyền dữ liệu","Không có độ tin cậy"], answer:"C", explanation:"UDP là phi kết nối, không cần bắt tay." },
+        { id:5, text:"TCP sử dụng cơ chế nào để đảm bảo độ tin cậy?", options:["Đánh số và theo dõi segment, xác nhận dữ liệu đã nhận, truyền lại dữ liệu chưa được xác nhận","Mã hóa dữ liệu trước khi truyền","Sử dụng checksum để kiểm tra lỗi"], answer:"A", explanation:"TCP dùng Sequence Number, ACK, timeout và truyền lại." },
+        { id:6, text:"Tính năng nào sau đây KHÔNG phải của TCP?", options:["Gửi dữ liệu với tốc độ tối đa","Thiết lập phiên","Phân phối theo trật tự đã gửi","Đảm bảo phân phối đáng tin cậy"], answer:"A", explanation:"TCP có kiểm soát luồng (Window Size), không gửi tốc độ tối đa." },
+        { id:7, text:"Lệnh nào được sử dụng để kiểm tra các kết nối TCP?", options:["tracert","ping","ipconfig","netstat"], answer:"D", explanation:"netstat hiển thị các kết nối mạng đang hoạt động." },
+        { id:8, text:"Địa chỉ IPv4 được tạo thành từ bao nhiêu bit?", options:["64","8","32","16"], answer:"C", explanation:"IPv4 có 32 bit, chia 4 octet." },
+        { id:9, text:"Công thức nào dùng để tính số lượng subnet khi chia mạng con?", options:["2^n (n là số bit host còn lại)","2^n (n là phiên bản IP)","Tất cả các câu trên đều sai","2^n (n là số bit mượn)"], answer:"D", explanation:"Số subnet = 2^(số bit mượn)." },
+        { id:10, text:"Trong mạng LAN, các thiết bị thường được kết nối với nhau theo cấu trúc liên kết nào?", options:["Mesh","Point-to-point","Hình sao (Star)","Hub and spoke"], answer:"C", explanation:"Star topology với switch/hub trung tâm." },
+        { id:11, text:"Bộ giao thức TCP/IP được tổ chức thành mấy lớp?", options:["7 lớp","5 lớp","3 lớp","4 lớp"], answer:"D", explanation:"TCP/IP có 4 lớp: Application, Transport, Internet, Network Access." },
+        { id:12, text:"Mục tiêu nào sau đây KHÔNG phải là mục tiêu của an ninh mạng?", options:["Tính thẩm mỹ","Tính toàn vẹn"], answer:"A", explanation:"An ninh mạng tập trung vào CIA: Confidentiality, Integrity, Availability." },
+        { id:13, text:"Tần số hoạt động phổ biến của WLAN là:", options:["2.4 GHz và 5 GHz","900 MHz","3.5 GHz","60 GHz"], answer:"A", explanation:"Wi-Fi dùng băng tần 2.4GHz và 5GHz." },
+        { id:14, text:"Chức năng của Subnet Mask là gì?", options:["Phân biệt địa chỉ IP","Xác định loại cáp mạng","Mã hóa dữ liệu","Xác định phần network và phần host của địa chỉ IP"], answer:"D", explanation:"Subnet Mask dùng để phân tách Network ID và Host ID." },
+        { id:15, text:"TCP sử dụng cơ chế nào để điều khiển luồng dữ liệu?", options:["Acknowledgement Number","Sequence Number","Window Size","Checksum"], answer:"C", explanation:"Window Size thông báo dung lượng bộ đệm còn trống." },
+        { id:16, text:"WLAN là viết tắt của:", options:["Wireless Local Area Network","Wired Local Area Network","Wired Long Area Network","Wireless Long Area Network"], answer:"A", explanation:"WLAN = Wireless LAN." },
+        { id:17, text:"Địa chỉ IP nào sau đây thuộc lớp B?", options:["175.10.192.200","192.168.1.1","224.0.0.1","120.10.10.10"], answer:"A", explanation:"Lớp B có octet đầu từ 128 đến 191." },
+        { id:18, text:"Subnet mask dùng để làm gì?", options:["Phân biệt địa chỉ IP","Xác định loại cáp mạng","Mã hóa dữ liệu","Xác định phần network và phần host của địa chỉ IP"], answer:"D", explanation:"Tương tự câu 14." },
+        { id:19, text:"Loại thông điệp nào được gửi từ một nguồn đến một đích duy nhất?", options:["Unicast","Multicast","Broadcast","Anycast"], answer:"A", explanation:"Unicast: 1-1." },
+        { id:20, text:"Quá trình chuyển đổi thông tin sang dạng phù hợp để truyền tải an toàn gọi là gì?", options:["Đóng gói","Mã hóa","Nén dữ liệu","Định dạng"], answer:"B", explanation:"Mã hóa (Encryption) đảm bảo an toàn." },
+        { id:21, text:"Địa chỉ IP nguồn trong gói tin IP đại diện cho điều gì?", options:["Địa chỉ MAC của thiết bị nhận","Địa chỉ IP của thiết bị nhận","Địa chỉ IP của thiết bị gửi","Địa chỉ MAC của thiết bị gửi"], answer:"C", explanation:"IP nguồn là thiết bị khởi tạo gói tin." },
+        { id:22, text:"Số hiệu port 80 được sử dụng cho giao thức nào?", options:["Telnet","SMTP","HTTP","FTP"], answer:"C", explanation:"HTTP dùng port 80." },
+        { id:23, text:"Vai trò chính của lớp giao vận là gì?", options:["Mã hóa và giải mã dữ liệu","Kiểm soát truy cập vào môi trường truyền dẫn","Định tuyến gói tin qua mạng","Liên lạc logic giữa các ứng dụng trên các host khác nhau"], answer:"D", explanation:"Lớp giao vận cung cấp kênh end-to-end cho ứng dụng." },
+        { id:24, text:"Wi-Fi là tên gọi khác của:", options:["WPAN","WLAN","WWAN","WMAN"], answer:"B", explanation:"Wi-Fi = WLAN." },
+        { id:25, text:"Bluetooth hoạt động theo tiêu chuẩn:", options:["IEEE 802.11","IEEE 802.16","IEEE 802.20","IEEE 802.15"], answer:"D", explanation:"Bluetooth thuộc IEEE 802.15 (WPAN)." },
+        { id:26, text:"Chuẩn IEEE nào được sử dụng cho WLAN?", options:["IEEE 802.20","IEEE 802.3","IEEE 802.15","IEEE 802.11"], answer:"D", explanation:"WLAN dùng 802.11." },
+        { id:27, text:"Lệnh nào được sử dụng để kiểm tra thông tin DNS của một tên miền?", options:["ipconfig","ping","tracert","nslookup"], answer:"D", explanation:"nslookup truy vấn DNS." },
+        { id:28, text:"DHCP có chức năng gì?", options:["Truyền tập tin giữa các máy tính","Gửi email","Phân giải tên miền thành địa chỉ IP","Tự động gán địa chỉ IP cho các thiết bị"], answer:"D", explanation:"DHCP cấp phát IP động." },
+        { id:29, text:"Giao thức nào sau đây KHÔNG phải là giao thức lớp ứng dụng?", options:["FTP","DNS","HTTP","TCP"], answer:"D", explanation:"TCP thuộc lớp giao vận." },
+        { id:30, text:"Mô hình dịch vụ nào cung cấp cho khách hàng toàn bộ phần mềm dạng dịch vụ hoàn chỉnh?", options:["SaaS","Cả 3 đáp án trên","IaaS","PaaS"], answer:"A", explanation:"SaaS cung cấp phần mềm hoàn chỉnh." },
+        { id:31, text:"PaaS cung cấp cho khách hàng:", options:["Nền tảng để phát triển và triển khai ứng dụng","Kết nối Internet","Phần cứng máy chủ","Phần mềm ứng dụng"], answer:"A", explanation:"PaaS cung cấp môi trường phát triển." },
+        { id:32, text:"Mô hình Hybrid Cloud là sự kết hợp của:", options:["IaaS và PaaS","Private Cloud và Public Cloud","IaaS và SaaS","SaaS và PaaS"], answer:"B", explanation:"Hybrid = private + public." },
+        { id:33, text:"Giao thức nào sau đây được sử dụng để gửi email?", options:["DNS","SMTP","FTP","HTTP"], answer:"B", explanation:"SMTP gửi email." },
+        { id:34, text:"Lớp nào trong mô hình OSI chịu trách nhiệm định dạng dữ liệu để đảm bảo khả năng tương thích giữa các thiết bị?", options:["Lớp Ứng dụng","Lớp Giao vận","Lớp Trình diễn","Lớp Phiên"], answer:"C", explanation:"Lớp Presentation định dạng, mã hóa, nén." },
+        { id:35, text:"Mô hình triển khai Cloud nào cho phép doanh nghiệp kiểm soát tối đa dữ liệu và bảo mật?", options:["Không có mô hình nào","Public Cloud","Hybrid Cloud","Private Cloud"], answer:"D", explanation:"Private Cloud dành riêng cho tổ chức." },
+        { id:36, text:"Điện toán đám mây là gì?", options:["Một công nghệ cho phép truy cập máy tính từ xa","Mô hình dịch vụ cung cấp tài nguyên máy tính cho người dùng thông qua Internet","Một loại hình dịch vụ lưu trữ dữ liệu trực tuyến như Dropbox","Một phương thức kết nối các thiết bị với nhau"], answer:"B", explanation:"Cloud cung cấp tài nguyên qua Internet." },
+        { id:37, text:"Quản lý định danh trong bảo mật điện toán đám mây là gì?", options:["Theo dõi hoạt động của người dùng","Quản lý danh sách người dùng","Kiểm soát truy cập vào thông tin và máy tính","Mã hóa dữ liệu"], answer:"C", explanation:"IAM kiểm soát truy cập." },
+        { id:38, text:"Các vấn đề bảo mật liên quan đến điện toán đám mây bao gồm:", options:["Tính liên tục đáp ứng, khôi phục dữ liệu","Cả ba đáp án trên","Bảo mật dữ liệu, bảo mật ứng dụng, quản lý định danh","Các vấn đề pháp lý và hợp đồng"], answer:"B", explanation:"Tất cả các yếu tố trên đều là vấn đề bảo mật cloud." },
+        { id:39, text:"Kiến trúc bảo mật điện toán đám mây hiệu quả cần:", options:["Triển khai các phương pháp phòng thủ thích hợp","Ngăn chặn mọi cuộc tấn công","Không cần quan tâm đến các vấn đề phát sinh","Không có đáp án đúng"], answer:"A", explanation:"Cần phòng thủ nhiều lớp." },
+        { id:40, text:"'Tính khả dụng động của môi trường kiểm thử' trong Cloud có nghĩa là gì?", options:["Môi trường kiểm thử luôn hoạt động","Có thể dễ dàng thay đổi cấu hình môi trường kiểm thử","Môi trường kiểm thử có thể di chuyển","Không có đáp án đúng"], answer:"B", explanation:"Dynamic provision: thay đổi cấu hình linh hoạt." },
+        { id:41, text:"Cloud Security là gì?", options:["Bảo mật hệ thống mạng nội bộ","Phần mềm diệt virus","Bảo vệ dữ liệu và ứng dụng trên nền tảng đám mây","Bảo mật dữ liệu trên máy tính cá nhân"], answer:"C", explanation:"Cloud Security bảo vệ dữ liệu, ứng dụng trên cloud." },
+        { id:42, text:"Mạng LAN (Local Area Network) có đặc điểm nào sau đây?", options:["Bao phủ một khu vực địa lý rộng lớn như một quốc gia","Chỉ sử dụng kết nối không dây","Bao phủ một khu vực địa lý nhỏ như một tòa nhà hoặc khuôn viên trường học","Luôn do các nhà cung cấp dịch vụ viễn thông (ISP) quản lý"], answer:"C", explanation:"LAN là mạng cục bộ phạm vi nhỏ." },
+        { id:43, text:"Thiết bị nào sau đây hoạt động ở lớp 2 và dùng để kết nối các thiết bị đầu cuối trong cùng một mạng LAN?", options:["Router","Switch","Repeater","Hub"], answer:"B", explanation:"Switch hoạt động ở tầng Data Link, dùng MAC." },
+        { id:44, text:"Mạng Intranet là gì?", options:["Mạng công cộng toàn cầu","Mạng nội bộ chỉ dành cho nhân viên trong một tổ chức","Mạng chia sẻ một phần dữ liệu nội bộ cho đối tác bên ngoài","Mạng diện rộng kết nối các thành phố"], answer:"B", explanation:"Intranet là mạng nội bộ." },
+        { id:45, text:"Trong các loại cáp truyền dẫn, loại cáp nào sử dụng ánh sáng để truyền dữ liệu?", options:["Cáp đồng trục","Cáp UTP","Cáp quang","Cáp STP"], answer:"C", explanation:"Cáp quang dùng ánh sáng." },
+        { id:46, text:"Mạng MAN (Metropolitan Area Network) có quy mô như thế nào?", options:["Nhỏ hơn LAN","Lớn hơn LAN nhưng nhỏ hơn WAN, thường bao phủ một thành phố","Phủ sóng toàn cầu","Chỉ kết nối 2 thiết bị với nhau"], answer:"B", explanation:"MAN là mạng đô thị." },
+        { id:47, text:"Toplogy (cấu trúc liên kết) nào mà tất cả các thiết bị được nối vào một trục cáp chính duy nhất?", options:["Star","Ring","Bus","Mesh"], answer:"C", explanation:"Cấu trúc Bus dùng cáp chính." },
+        { id:48, text:"Thuật ngữ 'Băng thông' (Bandwidth) trong mạng máy tính chỉ điều gì?", options:["Khả năng truyền tải dữ liệu tối đa của đường truyền trong một giây","Độ trễ của gói tin","Dung lượng ổ cứng của máy chủ","Số lượng người dùng truy cập cùng lúc"], answer:"A", explanation:"Băng thông là tốc độ tối đa (bps)." },
+        { id:49, text:"Thiết bị Router (Bộ định tuyến) thực hiện chức năng chính nào?", options:["Chống virus cho mạng","Khuếch đại tín hiệu vật lý","Đổi địa chỉ MAC","Kết nối các mạng IP khác nhau và tìm đường đi tốt nhất cho gói tin"], answer:"D", explanation:"Router định tuyến ở lớp 3." },
+        { id:50, text:"Extranet khác với Intranet ở điểm nào?", options:["Extranet dùng cho toàn thế giới truy cập","Extranet không dùng giao thức TCP/IP","Extranet cho phép các đối tác, khách hàng được ủy quyền truy cập vào một phần mạng nội bộ","Extranet an toàn hơn Internet nhưng kém hơn WLAN"], answer:"C", explanation:"Extranet mở rộng cho đối tác." },
+        { id:51, text:"Mạng có kiến trúc Client-Server có đặc điểm gì?", options:["Các máy tính có vai trò ngang hàng nhau","Máy chủ (Server) quản lý tài nguyên tập trung và phục vụ các máy khách (Client)","Không cần sử dụng hệ điều hành","Không cần kết nối Internet"], answer:"B", explanation:"Client-Server có server trung tâm." },
+        { id:52, text:"Lớp nào trong mô hình OSI chịu trách nhiệm chuyển đổi dữ liệu thành các bit để truyền lên môi trường vật lý?", options:["Data Link","Network","Physical","Transport"], answer:"C", explanation:"Lớp Physical xử lý tín hiệu vật lý." },
+        { id:53, text:"Đơn vị dữ liệu (PDU) tại lớp Network (Mạng) được gọi là gì?", options:["Segment","Packet","Frame","Bit"], answer:"B", explanation:"Lớp Network dùng Packet (gói tin)." },
+        { id:54, text:"Quá trình thêm các thông tin điều khiển (header) vào dữ liệu khi nó đi từ lớp cao xuống lớp thấp gọi là gì?", options:["Decapsulation","Encoding","Encapsulation","Decoding"], answer:"C", explanation:"Encapsulation: đóng gói dữ liệu." },
+        { id:55, text:"Địa chỉ MAC có chiều dài bao nhiêu bit?", options:["32","48","64","128"], answer:"B", explanation:"MAC dài 48 bit." },
+        { id:56, text:"Lớp Application (Ứng dụng) trong mô hình TCP/IP gộp chức năng của những lớp nào trong mô hình OSI?", options:["Application, Transport, Network","Application, Presentation, Session","Data Link, Physical","Session, Transport"], answer:"B", explanation:"TCP/IP gộp 3 lớp trên OSI (5,6,7)." },
+        { id:57, text:"Giao thức nào cung cấp cơ chế kiểm tra lỗi cho Frame ở lớp Data Link?", options:["IP","TCP","FCS (Frame Check Sequence)","MAC"], answer:"C", explanation:"FCS dùng CRC phát hiện lỗi." },
+        { id:58, text:"Mô hình tham chiếu OSI bao gồm bao nhiêu lớp?", options:["4","5","6","7"], answer:"D", explanation:"OSI có 7 lớp." },
+        { id:59, text:"Giao thức IP hoạt động ở lớp nào của mô hình OSI?", options:["Lớp 2","Lớp 3 (Network)","Lớp 4","Lớp 7"], answer:"B", explanation:"IP thuộc lớp Network." },
+        { id:60, text:"Lớp Data Link được chia thành 2 lớp con (sub-layer) nào?", options:["LLC và MAC","TCP và UDP","IPv4 và IPv6","LAN và WAN"], answer:"A", explanation:"LLC và MAC." },
+        { id:61, text:"Nhược điểm của giao thức IPv4 dẫn đến sự ra đời của IPv6 là gì?", options:["Tốc độ quá chậm","Bảo mật kém","Cạn kiệt không gian địa chỉ","Không hỗ trợ mạng không dây"], answer:"C", explanation:"IPv4 32 bit, thiếu địa chỉ." },
+        { id:62, text:"Quá trình bắt tay 3 bước (3-way handshake) của TCP sử dụng các loại gói tin nào theo thứ tự?", options:["ACK, SYN, SYN-ACK","SYN, SYN-ACK, ACK","SYN, ACK, FIN","FIN, ACK, SYN"], answer:"B", explanation:"SYN → SYN-ACK → ACK." },
+        { id:63, text:"Kích thước tiêu chuẩn tối thiểu của TCP Header là bao nhiêu?", options:["8 bytes","16 bytes","20 bytes","32 bytes"], answer:"C", explanation:"TCP Header tối thiểu 20 bytes." },
+        { id:64, text:"Kích thước của UDP Header là bao nhiêu?", options:["4 bytes","8 bytes","20 bytes","32 bytes"], answer:"B", explanation:"UDP Header 8 bytes." },
+        { id:65, text:"Cờ (Flag) FIN trong TCP Header mang ý nghĩa gì?", options:["Đồng bộ hóa số thứ tự","Xác nhận dữ liệu","Yêu cầu kết thúc kết nối","Thiết lập lại kết nối bị lỗi"], answer:"C", explanation:"FIN dùng để đóng kết nối." },
+        { id:66, text:"Socket trong truyền thông mạng được định nghĩa là sự kết hợp của:", options:["Địa chỉ MAC và Địa chỉ IP","Địa chỉ IP và Số hiệu Cổng (Port Number)","Giao thức TCP và Giao thức UDP","Địa chỉ mạng và Địa chỉ Host"], answer:"B", explanation:"Socket = IP + Port." },
+        { id:67, text:"Số hiệu port (Port numbers) từ 0 đến 1023 được gọi là gì?", options:["Well-known ports","Registered ports","Dynamic ports","Private ports"], answer:"A", explanation:"Cổng 0-1023 là well-known." },
+        { id:68, text:"Các cổng động (Dynamic/Private ports) mà trình duyệt web tự động mở khi truy cập Internet thường nằm trong dải nào?", options:["0-1023","1024-49151","49152-65535","Không có giới hạn"], answer:"C", explanation:"Cổng động từ 49152-65535." },
+        { id:69, text:"Thuật ngữ 'Multiplexing' (Đa hợp) tại lớp Giao vận có nghĩa là gì?", options:["Kết hợp nhiều dải băng tần","Chuyển đổi dữ liệu analog sang số","Cho phép nhiều ứng dụng khác nhau trên cùng một máy tính truyền dữ liệu đồng thời qua mạng nhờ phân biệt bằng các Port","Mở rộng kích thước mạng LAN"], answer:"C", explanation:"Đa hợp nhờ port." },
+        { id:70, text:"Giao thức TFTP (Trivial File Transfer Protocol) sử dụng giao thức giao vận nào?", options:["TCP","UDP","IP","HTTP"], answer:"B", explanation:"TFTP dùng UDP." },
+        { id:71, text:"Tính năng 'Ordered Delivery' (Phân phối có trật tự) của TCP hoạt động dựa trên cơ chế nào?", options:["Gửi dữ liệu theo một đường vật lý duy nhất","Cấm các gói tin đi tắt","Gắn Số thứ tự (Sequence Number) cho từng đoạn dữ liệu để bên nhận sắp xếp lại","Đóng băng mạng cho đến khi dữ liệu đến hết"], answer:"C", explanation:"Sequence Number giúp sắp xếp." },
+        { id:72, text:"Trong mạng WLAN, kiến trúc BSS (Basic Service Set) bao gồm thành phần trung tâm nào?", options:["Router","Modem","Access Point (AP)","Switch"], answer:"C", explanation:"BSS có AP." },
+        { id:73, text:"ESS (Extended Service Set) được tạo ra bằng cách nào?", options:["Kết nối nhiều BSS lại với nhau thông qua một hệ thống phân phối","Lắp thêm ăng-ten cho Router","Tăng công suất phát sóng của AP","Sử dụng tần số 6GHz"], answer:"A", explanation:"ESS gồm nhiều BSS nối với nhau." },
+        { id:74, text:"Tiêu chuẩn bảo mật Wi-Fi nào sau đây là mới nhất và an toàn nhất hiện nay?", options:["WEP","WPA","WPA2","WPA3"], answer:"D", explanation:"WPA3 là chuẩn mới nhất." },
+        { id:75, text:"SSID (Service Set Identifier) trong cấu hình WLAN dùng để làm gì?", options:["Mã hóa dữ liệu","Tăng tốc độ đường truyền","Đặt tên công khai cho mạng Wi-Fi để người dùng nhận diện","Cấp phát IP tự động"], answer:"C", explanation:"SSID là tên mạng Wi-Fi." },
+        { id:76, text:"Mạng WLAN sử dụng cơ chế nào để giải quyết vấn đề đụng độ (xung đột) dữ liệu trên môi trường sóng vô tuyến?", options:["CSMA/CD","CSMA/CA","Token Ring","DHCP"], answer:"B", explanation:"CSMA/CA dùng trong Wi-Fi." },
+        { id:77, text:"Mô hình mạng WLAN Ad-hoc (IBSS) có đặc điểm gì?", options:["Kết nối qua cáp quang","Các thiết bị không dây kết nối trực tiếp với nhau (Peer-to-Peer) mà không cần Access Point","Cần phải có Router mạnh","Phạm vi phủ sóng rộng hơn BSS"], answer:"B", explanation:"Ad-hoc không cần AP." },
+        { id:78, text:"Băng tần 5GHz có đặc điểm gì nổi bật so với băng tần 2.4GHz?", options:["Tốc độ chậm hơn nhưng phủ sóng xa hơn","Băng thông lớn hơn, ít bị nhiễu hơn, nhưng khả năng xuyên tường kém hơn","Chỉ dùng cho mạng có dây","Gây hại cho sức khỏe"], answer:"B", explanation:"5GHz nhanh, ít nhiễu nhưng xuyên tường kém." },
+        { id:79, text:"Chuẩn IEEE 802.11ac (còn gọi là Wi-Fi 5) hoạt động trên băng tần nào?", options:["Chỉ 2.4GHz","Chỉ 5GHz","Cả 2.4GHz và 5GHz","6GHz"], answer:"B", explanation:"802.11ac chỉ dùng 5GHz." },
+        { id:80, text:"Hiện tượng nhiễu đồng kênh (Co-channel interference) trong triển khai Wi-Fi xảy ra khi nào?", options:["Khi dùng cáp mạng kém chất lượng","Khi các Access Point đặt gần nhau sử dụng chung một kênh tần số","Khi mật khẩu Wi-Fi bị lộ","Khi có quá nhiều SSID"], answer:"B", explanation:"Nhiễu đồng kênh khi trùng kênh." },
+        { id:81, text:"Giao thức POP3 (Post Office Protocol version 3) được sử dụng với mục đích gì?", options:["Truyền tải file lớn","Gửi email từ Client lên Server","Tải (nhận) email từ Mail Server về máy tính Client","Phân giải tên miền"], answer:"C", explanation:"POP3 dùng để nhận email." },
+        { id:82, text:"Sự khác biệt cốt lõi giữa giao thức POP3 và IMAP khi nhận email là gì?", options:["POP3 nhanh hơn IMAP","IMAP đồng bộ hóa email trên nhiều thiết bị với Server, trong khi POP3 thường tải mail về máy cục bộ và xóa bản gốc trên Server","POP3 bảo mật cao hơn","IMAP dùng để gửi mail"], answer:"B", explanation:"IMAP đồng bộ, POP3 tải về xóa." },
+        { id:83, text:"Giao thức HTTPS (Web bảo mật) sử dụng cổng (Port) mặc định nào?", options:["80","21","25","443"], answer:"D", explanation:"HTTPS dùng port 443." },
+        { id:84, text:"Trên hệ điều hành Windows, lệnh ipconfig /all cung cấp thông tin nào mà lệnh ipconfig thông thường không hiển thị?", options:["Địa chỉ IPv4","Subnet Mask","Địa chỉ MAC (Physical Address) và thông tin máy chủ DHCP, DNS","Tốc độ mạng"], answer:"C", explanation:"/all hiển thị chi tiết MAC, DHCP, DNS." },
+        { id:85, text:"Nhược điểm lớn nhất khiến giao thức Telnet hiện nay ít được sử dụng trên Internet là gì?", options:["Cài đặt quá phức tạp","Chỉ hỗ trợ trên Linux","Dữ liệu truyền đi dưới dạng văn bản rõ (cleartext), không mã hóa nên rất dễ bị tin tặc đánh cắp mật khẩu","Yêu cầu băng thông quá lớn"], answer:"C", explanation:"Telnet không mã hóa." },
+        { id:86, text:"Giao thức quản trị từ xa an toàn SSH (Secure Shell) sử dụng port mặc định nào?", options:["20","21","22","23"], answer:"C", explanation:"SSH port 22." },
+        { id:87, text:"Trong hệ thống DNS, bản ghi loại A (A Record) có chức năng gì?", options:["Chỉ định Mail Server","Ánh xạ một Tên miền (Domain) sang một địa chỉ IPv4","Ánh xạ Tên miền sang IPv6","Khai báo tên bí danh (Alias)"], answer:"B", explanation:"A record ánh xạ tên miền → IPv4." },
+        { id:88, text:"Trong quá trình xin cấp phát IP, gói tin DHCP Discover do Client gửi đi có đặc điểm gì?", options:["Gửi Unicast đến Server","Gửi Broadcast (quảng bá) tới toàn mạng vì Client chưa biết DHCP Server nằm ở đâu","Gửi Multicast","Gửi kèm theo mật khẩu"], answer:"B", explanation:"DHCP Discover là broadcast." },
+        { id:89, text:"Để trao đổi file một cách an toàn qua mạng, doanh nghiệp nên sử dụng giao thức nào thay thế cho FTP truyền thống?", options:["TFTP","HTTP","SMTP","SFTP hoặc FTPS"], answer:"D", explanation:"SFTP/FTPS mã hóa dữ liệu." },
+        { id:90, text:"Trong cấu trúc phân cấp của hệ thống DNS toàn cầu, cấp cao nhất (đỉnh rễ) được gọi là gì?", options:["Top-Level Domain (TLD)","Root Name Servers (Máy chủ gốc)","ISP DNS","Local DNS"], answer:"B", explanation:"Root servers là gốc." },
+        { id:91, text:"Công nghệ cốt lõi nào là nền tảng cho phép Cloud Computing phân chia tài nguyên một máy chủ vật lý thành nhiều môi trường độc lập?", options:["Encapsulation","Load Balancing","Virtualization (Ảo hóa)","Routing"], answer:"C", explanation:"Ảo hóa là nền tảng cloud." },
+        { id:92, text:"Tính năng 'Độ đàn hồi' (Rapid Elasticity) trong Điện toán đám mây mang ý nghĩa gì?", options:["Hệ thống không bao giờ bị tắt","Khả năng tự động mở rộng tài nguyên (RAM, CPU) khi quá tải và thu hẹp lại khi rảnh rỗi","Mạng có thể chịu được va đập vật lý","Dữ liệu có thể phục hồi ngay lập tức"], answer:"B", explanation:"Elasticity: tự động co giãn." },
+        { id:93, text:"Các ứng dụng như Google Drive, Office 365, Zoom thuộc mô hình dịch vụ đám mây nào?", options:["IaaS","PaaS","SaaS","DaaS"], answer:"C", explanation:"SaaS cung cấp phần mềm." },
+        { id:94, text:"Dịch vụ cho thuê máy chủ ảo (Virtual Server), không gian lưu trữ thô và thiết bị mạng thuộc mô hình nào?", options:["IaaS","PaaS","SaaS","SecaaS"], answer:"A", explanation:"IaaS cung cấp hạ tầng." },
+        { id:95, text:"Mô hình Đám mây cộng đồng (Community Cloud) phù hợp với đối tượng nào?", options:["Một người dùng cá nhân","Một doanh nghiệp muốn chia sẻ cho toàn cầu","Nhiều tổ chức có chung mục tiêu, chính sách bảo mật hoặc tuân thủ pháp lý","Dành riêng cho học sinh sinh viên"], answer:"C", explanation:"Community cloud dùng chung cho nhóm tổ chức." },
+        { id:96, text:"Một trong những rủi ro lớn nhất đối với doanh nghiệp khi sử dụng Public Cloud là gì?", options:["Chi phí đầu tư ban đầu quá đắt đỏ","Phải tự bảo trì phần cứng","Mất quyền kiểm soát trực tiếp đối với cơ sở hạ tầng vật lý và rủi ro rò rỉ dữ liệu khi nằm chung trên máy chủ với người khác","Tốc độ mạng nội bộ giảm sút"], answer:"C", explanation:"Public cloud giảm kiểm soát vật lý." },
+        { id:97, text:"Mô hình thanh toán 'Pay-as-you-go' trong Điện toán đám mây là gì?", options:["Trả tiền một lần dùng trọn đời","Trả chi phí linh hoạt dựa trên mức độ sử dụng tài nguyên thực tế","Miễn phí tháng đầu tiên","Phải đóng tiền cọc trước"], answer:"B", explanation:"Pay-as-you-go: trả theo dùng." },
+        { id:98, text:"Trong mô hình IaaS của Public Cloud, trách nhiệm bảo vệ an ninh vật lý của Data Center (chống trộm cắp, hỏa hoạn) thuộc về ai?", options:["Khách hàng sử dụng dịch vụ","Nhà cung cấp dịch vụ đám mây (Cloud Service Provider)","Cơ quan chính phủ","Nhà mạng cung cấp Internet"], answer:"B", explanation:"CSP chịu trách nhiệm an ninh vật lý." },
+        { id:99, text:"Trong hợp đồng cung cấp dịch vụ Cloud, thuật ngữ SLA (Service Level Agreement) cam kết điều gì?", options:["Số lượng người được tạo tài khoản","Tốc độ mạng Wi-Fi của người dùng","Mức độ chất lượng dịch vụ, thời gian hoạt động (Uptime) và các mức bồi thường nếu dịch vụ gián đoạn","Giới hạn dung lượng ổ cứng"], answer:"C", explanation:"SLA cam kết chất lượng dịch vụ." },
+        { id:100, text:"Thuật ngữ 'Multi-cloud' mang ý nghĩa gì trong chiến lược công nghệ của doanh nghiệp?", options:["Dùng một máy tính để vào nhiều đám mây","Cài đặt nhiều phần mềm đám mây trên máy","Sử dụng đồng thời các dịch vụ đám mây từ nhiều nhà cung cấp khác nhau để tối ưu chi phí và tránh phụ thuộc","Kết hợp Private và Public Cloud"], answer:"C", explanation:"Multi-cloud dùng nhiều nhà cung cấp." },
+        { id:101, text:"Chế độ truyền thông nào cho phép hai thiết bị gửi và nhận dữ liệu cùng một lúc trên đường truyền?", options:["Simplex","Half-duplex","Full-duplex","Auto-duplex"], answer:"C", explanation:"Full-duplex song công toàn phần." },
+        { id:102, text:"Cấu trúc mạng (Topology) nào có độ tin cậy cao nhất nhưng cũng tốn kém chi phí dây cáp nhất?", options:["Star","Ring","Mesh","Tree"], answer:"C", explanation:"Mesh dự phòng cao, tốn cáp." },
+        { id:103, text:"Giao thức ARP (Address Resolution Protocol) có chức năng gì trong mạng nội bộ?", options:["Tự động cấp IP cho máy tính","Tìm địa chỉ MAC của thiết bị khi đã biết địa chỉ IP","Phân giải tên miền thành địa chỉ IP","Định tuyến gói tin ra Internet"], answer:"B", explanation:"ARP chuyển IP → MAC." },
+        { id:104, text:"Địa chỉ IP 192.168.1.10 thuộc lớp mạng nào và có Subnet Mask mặc định là bao nhiêu?", options:["Lớp A, 255.0.0.0","Lớp B, 255.255.0.0","Lớp C, 255.255.255.0","Lớp D, 255.255.255.255"], answer:"C", explanation:"192 thuộc lớp C, mask mặc định /24." },
+        { id:105, text:"Trường TTL (Time to Live) trong Header của gói tin IPv4 có tác dụng gì?", options:["Xác định độ trễ của đường truyền","Định dạng thời gian tạo ra gói tin","Ngăn chặn gói tin chạy vòng quanh vô hạn trong mạng bằng cách giảm đi 1 sau mỗi lần qua một Router","Tăng tốc độ ưu tiên cho gói tin"], answer:"C", explanation:"TTL ngăn loop." },
+        { id:106, text:"Lệnh 'ping' sử dụng giao thức nào dưới đây để gửi gói tin kiểm tra kết nối?", options:["TCP","UDP","ICMP","IGMP"], answer:"C", explanation:"Ping dùng ICMP." },
+        { id:107, text:"Trong Header của giao thức TCP, cờ (Flag) nào được sử dụng để bắt buộc thiết lập lại kết nối ngay lập tức khi phát hiện lỗi nghiêm trọng?", options:["SYN","FIN","RST (Reset)","URG"], answer:"C", explanation:"RST dùng để reset kết nối." },
+        { id:108, text:"Ứng dụng gọi điện thoại qua Internet (Voice over IP - VoIP) nên sử dụng giao thức giao vận nào để đảm bảo tính thời gian thực?", options:["TCP","UDP","HTTP","SMTP"], answer:"B", explanation:"VoIP dùng UDP vì độ trễ thấp." },
+        { id:109, text:"Khi giao thức FTP hoạt động, nó thường sử dụng tổ hợp 2 cổng (Port) nào?", options:["Port 20 cho Dữ liệu và Port 21 cho Điều khiển","Port 80 và 443","Port 22 và 23","Port 110 và 143"], answer:"A", explanation:"FTP dùng 20 (data) và 21 (control)." },
+        { id:110, text:"Trong các chuẩn bảo mật Wi-Fi, thuật toán mã hóa mạnh mẽ AES được sử dụng mặc định bắt đầu từ chuẩn nào?", options:["WEP","WPA","WPA2","802.1X"], answer:"C", explanation:"WPA2 dùng AES." },
+        { id:111, text:"Công nghệ nào được áp dụng từ chuẩn 802.11n (Wi-Fi 4) trở đi để sử dụng nhiều ăng-ten cùng lúc, giúp tăng băng thông và độ ổn định?", options:["OFDM","MIMO","CSMA/CA","QoS"], answer:"B", explanation:"MIMO dùng nhiều anten." },
+        { id:112, text:"Tiêu chuẩn 802.11g hoạt động ở băng tần nào và có tốc độ tối đa lý thuyết là bao nhiêu?", options:["5 GHz / 54 Mbps","2.4 GHz / 11 Mbps","2.4 GHz / 54 Mbps","5 GHz / 300 Mbps"], answer:"C", explanation:"802.11g: 2.4 GHz, 54 Mbps." },
+        { id:113, text:"Quá trình cấp phát IP tự động của DHCP diễn ra qua 4 bước (D.O.R.A), thứ tự nào sau đây là đúng?", options:["Discover → Request → Offer → Acknowledge","Discover → Offer → Request → Acknowledge","Offer → Discover → Acknowledge → Request","Request → Offer → Discover → Acknowledge"], answer:"B", explanation:"DORA: Discover, Offer, Request, Ack." },
+        { id:114, text:"Trong hệ thống phân giải tên miền (DNS), bản ghi loại MX (Mail Exchanger Record) dùng để làm gì?", options:["Trỏ tên miền phụ về tên miền chính","Xác định địa chỉ IPv6 của máy chủ","Xác định máy chủ chịu trách nhiệm nhận email cho tên miền đó","Chứng thực bảo mật tên miền"], answer:"C", explanation:"MX record cho mail server." },
+        { id:115, text:"Khi truy cập một trang web lỗi và nhận được mã trạng thái HTTP 404, điều đó có nghĩa là gì?", options:["Máy chủ nội bộ bị sập","Không có quyền truy cập","Yêu cầu chứng thực","Tài nguyên web không tồn tại"], answer:"D", explanation:"404 Not Found." },
+        { id:116, text:"Trong kiến trúc ảo hóa của Điện toán đám mây, phần mềm chuyên dụng dùng để tạo ra và quản lý các Máy ảo (Virtual Machine) được gọi là gì?", options:["Docker","Container","Hypervisor","Middleware"], answer:"C", explanation:"Hypervisor quản lý VM." },
+        { id:117, text:"Các dịch vụ như Google App Engine, Microsoft Azure App Services (nơi bạn chỉ việc đẩy code lên là chạy, không cần cài Win hay Linux) thuộc mô hình Đám mây nào?", options:["IaaS","PaaS","SaaS","XaaS"], answer:"B", explanation:"PaaS cung cấp nền tảng." },
+        { id:118, text:"Đặc tính 'Broad Network Access' (Truy cập mạng diện rộng) của điện toán đám mây có nghĩa là gì?", options:["Chỉ sử dụng được qua mạng cáp quang","Dữ liệu được mã hóa mạnh mẽ","Có thể truy cập dịch vụ bằng nhiều loại thiết bị mọi lúc, mọi nơi miễn là có mạng","Tốc độ băng thông luôn được đảm bảo lớn nhất"], answer:"C", explanation:"Broad network access: truy cập đa thiết bị." },
+        { id:119, text:"Thuật ngữ 'Resource Pooling' (Hồ chứa tài nguyên) thể hiện ưu điểm gì của Cloud?", options:["Nhà cung cấp gom tài nguyên điện toán thành một hệ thống lớn để phục vụ nhiều khách hàng khác nhau theo mô hình đa người thuê","Cho phép khách hàng tự tạo tài khoản","Đồng bộ hóa dữ liệu từ nhiều nguồn","Thanh toán theo lượng dữ liệu truyền qua"], answer:"A", explanation:"Resource pooling: chia sẻ tài nguyên." },
+        { id:120, text:"Rủi ro 'Vendor Lock-in' (Khóa chặt vào nhà cung cấp) trong điện toán đám mây nghĩa là gì?", options:["Tài khoản bị nhà cung cấp khóa do chưa đóng tiền","Doanh nghiệp phụ thuộc quá nhiều vào một nhà cung cấp Cloud và gặp khó khăn, tốn kém khi muốn chuyển dữ liệu sang hãng khác","Hệ thống bị hacker tống tiền mã hóa dữ liệu","Người dùng không được phép xóa tài khoản"], answer:"B", explanation:"Vendor lock-in: phụ thuộc nhà cung cấp." }
     ];
 
-    // ==================== 100 CÂU (45 + 55 CÂU PHỤ) ====================
-    const extra55 = [
-        { text:"Thiết bị nào hoạt động ở lớp 2 (Data Link)?", options:["Router","Switch","Hub","Repeater"], answer:"B", chapter:1, explanation:"Switch dùng địa chỉ MAC." },
-        { text:"Router hoạt động ở lớp nào?", options:["Lớp 1","Lớp 2","Lớp 3","Lớp 4"], answer:"C", chapter:1, explanation:"Lớp Network." },
-        { text:"Topology hình sao có đặc điểm?", options:["Vòng","Kết nối trung tâm","Bus chung","Đầy đủ"], answer:"B", chapter:1, explanation:"Nối vào switch/hub." },
-        { text:"Mạng hội tụ cho phép?", options:["Chỉ dữ liệu","Dữ liệu+thoại+video","Chỉ không dây","Chỉ cáp quang"], answer:"B", chapter:1, explanation:"Truyền đồng thời voice, video, data." },
-        { text:"Kháng lỗi đạt được nhờ?", options:["Một đường","Nhiều đường dự phòng","Tăng băng thông","Dùng switch"], answer:"B", chapter:1, explanation:"Dự phòng đường truyền." },
-        { text:"Lớp Network (OSI) tương ứng TCP/IP?", options:["Application","Transport","Internet","Network Access"], answer:"C", chapter:2, explanation:"Lớp Internet." },
-        { text:"PDU của lớp Transport?", options:["Frame","Packet","Segment","Bit"], answer:"C", chapter:2, explanation:"Segment (TCP) hoặc datagram (UDP)." },
-        { text:"PDU của lớp Network?", options:["Frame","Packet","Segment","Bit"], answer:"B", chapter:2, explanation:"Packet." },
-        { text:"Cáp UTP dùng đầu nối?", options:["RJ-11","RJ-45","BNC","LC"], answer:"B", chapter:2, explanation:"RJ-45." },
-        { text:"Ưu điểm cáp quang?", options:["Chống nhiễu kém","Truyền xa, băng thông cao","Giá rẻ","Dễ uốn"], answer:"B", chapter:2, explanation:"Suy hao thấp." },
-        { text:"Cáp chéo dùng để?", options:["PC-Switch","Switch-Router","PC-PC","PC-Modem"], answer:"C", chapter:2, explanation:"Nối hai thiết bị cùng loại." },
-        { text:"Cổng HTTPS?", options:["80","443","8080","8443"], answer:"B", chapter:3, explanation:"HTTPS cổng 443." },
-        { text:"SMTP cổng?", options:["25","110","143","53"], answer:"A", chapter:3, explanation:"SMTP cổng 25." },
-        { text:"DNS cổng?", options:["53","67","68","161"], answer:"A", chapter:3, explanation:"DNS cổng 53." },
-        { text:"Chuẩn 802.11a băng tần?", options:["2.4GHz","5GHz","900MHz","6GHz"], answer:"B", chapter:4, explanation:"5 GHz." },
-        { text:"CSMA/CA dùng trong?", options:["Ethernet có dây","WLAN","Token ring","FDDI"], answer:"B", chapter:4, explanation:"Wi-Fi." },
-        { text:"POP3 cổng?", options:["110","143","993","995"], answer:"A", chapter:5, explanation:"POP3 cổng 110." },
-        { text:"IMAP cổng?", options:["110","143","25","587"], answer:"B", chapter:5, explanation:"IMAP cổng 143." },
-        { text:"FTP dùng giao thức?", options:["TCP","UDP","ICMP","IGMP"], answer:"A", chapter:5, explanation:"FTP dùng TCP." },
-        { text:"SSH an toàn hơn Telnet nhờ?", options:["Mã hóa","Tốc độ","Cổng khác","Không mật khẩu"], answer:"A", chapter:5, explanation:"SSH mã hóa phiên." },
-        { text:"Thứ tự DHCP?", options:["DISCOVER→OFFER→REQUEST→ACK","DISCOVER→REQUEST→OFFER→ACK","REQUEST→OFFER→ACK","OFFER→DISCOVER→REQUEST"], answer:"A", chapter:5, explanation:"4 bước cơ bản." },
-        { text:"IaaS cung cấp?", options:["Máy ảo, lưu trữ","Phần mềm","Nền tảng","Email"], answer:"A", chapter:6, explanation:"Hạ tầng ảo hóa." },
-        { text:"Mạng /26 có bao nhiêu host?", options:["62","126","30","14"], answer:"A", chapter:6, explanation:"2^6 - 2 = 62." },
-        { text:"Địa chỉ loopback?", options:["127.0.0.1","0.0.0.0","255.255.255.255","224.0.0.1"], answer:"A", chapter:6, explanation:"127.0.0.1." },
-        { text:"NAT dùng để?", options:["Private→Public","Tên→IP","Cấp IP","Định tuyến"], answer:"A", chapter:6, explanation:"Chuyển địa chỉ private ra public." },
-        { text:"Địa chỉ broadcast cục bộ?", options:["255.255.255.255","0.0.0.0","127.0.0.1","224.0.0.1"], answer:"A", chapter:6, explanation:"255.255.255.255." }
-    ];
-    // Thêm 29 câu từ 45 câu để đủ 55 câu bổ sung (tổng 100)
-    const extraFrom45 = questions45.slice(0, 29).map((q, idx) => ({ ...q, chapter: (idx % 6) + 1 }));
-    const allExtra = [...extra55, ...extraFrom45];
-    const base45WithChapter = questions45.map((q, idx) => ({ ...q, chapter: (idx % 6) + 1 }));
-    const full100 = [...base45WithChapter, ...allExtra];
-    for (let i = 0; i < full100.length; i++) full100[i].id = i + 1;
+    // Tách 49 câu đầu
+    const basicQuestions = allQuestions.filter(q => q.id <= 49);
+    const chapterQuestions = allQuestions.filter(q => q.id >= 50);
 
-    // ================ LOGIC TỰ ĐỘNG KIỂM TRA ================
-    let answers45Arr = new Array(45).fill(null);
-    let answers100Arr = new Array(100).fill(null);
+    // Gán chương cho chapterQuestions (dựa trên nội dung đã phân tích)
+    const chapterMap = {
+        50:1,51:1,52:2,53:2,54:2,55:2,56:2,57:2,58:2,59:2,60:2,61:2,
+        62:3,63:3,64:3,65:3,66:3,67:3,68:3,69:3,70:3,71:3,
+        72:4,73:4,74:4,75:4,76:4,77:4,78:4,79:4,80:4,
+        81:5,82:5,83:5,84:5,85:5,86:5,87:5,88:5,89:5,90:5,
+        91:6,92:6,93:6,94:6,95:6,96:6,97:6,98:6,99:6,100:6,
+        101:1,102:1,103:2,104:2,105:2,106:2,107:3,108:3,109:3,110:4,111:4,112:4,
+        113:5,114:5,115:5,116:6,117:6,118:6,119:6,120:6
+    };
+    for (let q of chapterQuestions) {
+        q.chapter = chapterMap[q.id] || 1;
+    }
+
+    // State
+    let basicAnswers = new Array(basicQuestions.length).fill(null);
+    let chapterAnswers = new Array(chapterQuestions.length).fill(null);
     let currentChapter = 1;
 
-    function checkAndShow(question, selected, fbId) {
-        const fb = document.getElementById(fbId);
+    // Helper hiển thị feedback
+    function showFeedback(question, selected, fbId) {
+        const fbDiv = document.getElementById(fbId);
         if (!selected) {
-            fb.innerHTML = `<div class="feedback neutral">⚠️ Chưa chọn. Đáp án đúng: ${question.answer}. Giải thích: ${question.explanation}</div>`;
+            fbDiv.innerHTML = `<div class="feedback neutral">⚠️ Chưa chọn. Đáp án đúng: ${question.answer}. Giải thích: ${question.explanation}</div>`;
             return false;
         }
         if (selected === question.answer) {
-            fb.innerHTML = `<div class="feedback correct-feedback">✅ Đúng! Giải thích: ${question.explanation}</div>`;
+            fbDiv.innerHTML = `<div class="feedback correct-feedback">✅ Đúng! Giải thích: ${question.explanation}</div>`;
             return true;
         } else {
-            fb.innerHTML = `<div class="feedback wrong-feedback">❌ Sai. Đáp án đúng: ${question.answer}. Giải thích: ${question.explanation}</div>`;
+            fbDiv.innerHTML = `<div class="feedback wrong-feedback">❌ Sai. Đáp án đúng: ${question.answer}. Giải thích: ${question.explanation}</div>`;
             return false;
         }
     }
 
-    function render45() {
+    // Render 49 câu basic
+    function renderBasic() {
         let html = '';
-        questions45.forEach((q, idx) => {
-            let selected = answers45Arr[idx] || '';
+        basicQuestions.forEach((q, idx) => {
+            let selected = basicAnswers[idx] || '';
             html += `<div class="question-card">
                 <div class="question-text">${q.id}. ${q.text}</div>
                 <div class="options">
@@ -317,52 +365,53 @@
                         let letter = String.fromCharCode(65+oi);
                         let checked = (selected === letter) ? 'checked' : '';
                         return `<label class="option">
-                            <input type="radio" name="q45_${idx}" value="${letter}" ${checked} onchange="select45(${idx}, '${letter}')">
+                            <input type="radio" name="basic_${idx}" value="${letter}" ${checked} onchange="selectBasic(${idx}, '${letter}')">
                             <span>${letter}. ${opt}</span>
                         </label>`;
                     }).join('')}
                 </div>
-                <div id="fb45_${idx}" class="feedback"></div>
+                <div id="fbBasic_${idx}" class="feedback"></div>
             </div>`;
         });
-        document.getElementById('questions45Container').innerHTML = html;
-        for (let i=0; i<questions45.length; i++) {
-            if (answers45Arr[i]) {
-                let q = questions45[i];
-                let fbDiv = document.getElementById(`fb45_${i}`);
+        document.getElementById('questionsBasicContainer').innerHTML = html;
+        // Khôi phục feedback nếu có
+        for (let i=0; i<basicQuestions.length; i++) {
+            if (basicAnswers[i]) {
+                let q = basicQuestions[i];
+                let fbDiv = document.getElementById(`fbBasic_${i}`);
                 if (fbDiv) {
-                    if (answers45Arr[i] === q.answer) fbDiv.innerHTML = `<div class="feedback correct-feedback">✅ Đúng! Giải thích: ${q.explanation}</div>`;
+                    if (basicAnswers[i] === q.answer) fbDiv.innerHTML = `<div class="feedback correct-feedback">✅ Đúng! Giải thích: ${q.explanation}</div>`;
                     else fbDiv.innerHTML = `<div class="feedback wrong-feedback">❌ Sai. Đáp án đúng: ${q.answer}. Giải thích: ${q.explanation}</div>`;
                 }
             }
         }
-        updateScore45();
+        updateBasicScore();
     }
 
-    window.select45 = function(idx, val) {
-        answers45Arr[idx] = val;
-        let q = questions45[idx];
-        checkAndShow(q, val, `fb45_${idx}`);
-        updateScore45();
+    window.selectBasic = function(idx, val) {
+        basicAnswers[idx] = val;
+        let q = basicQuestions[idx];
+        showFeedback(q, val, `fbBasic_${idx}`);
+        updateBasicScore();
     };
 
-    function updateScore45() {
-        let answered = answers45Arr.filter(a => a !== null).length;
-        document.getElementById('score45').innerHTML = `📊 Đã chọn: ${answered}/45 câu`;
+    function updateBasicScore() {
+        let answered = basicAnswers.filter(a => a !== null).length;
+        document.getElementById('scoreBasic').innerHTML = `📊 Đã chọn: ${answered}/${basicQuestions.length} câu`;
     }
 
-    function reset45() {
-        answers45Arr.fill(null);
-        render45();
+    function resetBasic() {
+        basicAnswers.fill(null);
+        renderBasic();
     }
 
-    // 100 câu
-    function render100() {
-        let filtered = full100.filter(q => q.chapter === currentChapter);
+    // Render chapter
+    function renderChapter() {
+        let filtered = chapterQuestions.filter(q => q.chapter === currentChapter);
         let html = '';
-        filtered.forEach(q => {
-            let globalIdx = full100.findIndex(f => f.id === q.id);
-            let selected = answers100Arr[globalIdx] || '';
+        filtered.forEach((q) => {
+            let globalIdx = chapterQuestions.findIndex(qq => qq.id === q.id);
+            let selected = chapterAnswers[globalIdx] || '';
             html += `<div class="question-card">
                 <div class="question-text">${q.id}. ${q.text}</div>
                 <div class="options">
@@ -370,61 +419,62 @@
                         let letter = String.fromCharCode(65+oi);
                         let checked = (selected === letter) ? 'checked' : '';
                         return `<label class="option">
-                            <input type="radio" name="q100_${q.id}" value="${letter}" ${checked} onchange="select100(${globalIdx}, '${letter}')">
+                            <input type="radio" name="chap_${q.id}" value="${letter}" ${checked} onchange="selectChapter(${globalIdx}, '${letter}')">
                             <span>${letter}. ${opt}</span>
                         </label>`;
                     }).join('')}
                 </div>
-                <div id="fb100_${q.id}" class="feedback"></div>
+                <div id="fbChapter_${q.id}" class="feedback"></div>
             </div>`;
         });
-        document.getElementById('questions100Container').innerHTML = html;
+        document.getElementById('questionsChapterContainer').innerHTML = html;
+        // Khôi phục feedback
         filtered.forEach(q => {
-            let globalIdx = full100.findIndex(f => f.id === q.id);
-            let selected = answers100Arr[globalIdx];
+            let idx = chapterQuestions.findIndex(qq => qq.id === q.id);
+            let selected = chapterAnswers[idx];
             if (selected) {
-                let fbDiv = document.getElementById(`fb100_${q.id}`);
+                let fbDiv = document.getElementById(`fbChapter_${q.id}`);
                 if (fbDiv) {
                     if (selected === q.answer) fbDiv.innerHTML = `<div class="feedback correct-feedback">✅ Đúng! Giải thích: ${q.explanation}</div>`;
                     else fbDiv.innerHTML = `<div class="feedback wrong-feedback">❌ Sai. Đáp án đúng: ${q.answer}. Giải thích: ${q.explanation}</div>`;
                 }
             }
         });
-        updateScore100();
+        updateChapterScore();
     }
 
-    window.select100 = function(globalIdx, val) {
-        answers100Arr[globalIdx] = val;
-        let q = full100[globalIdx];
-        checkAndShow(q, val, `fb100_${q.id}`);
-        updateScore100();
+    window.selectChapter = function(globalIdx, val) {
+        chapterAnswers[globalIdx] = val;
+        let q = chapterQuestions[globalIdx];
+        showFeedback(q, val, `fbChapter_${q.id}`);
+        updateChapterScore();
     };
 
-    function updateScore100() {
-        let filtered = full100.filter(q => q.chapter === currentChapter);
-        let answered = filtered.filter(q => answers100Arr[full100.findIndex(f => f.id === q.id)] !== null).length;
-        document.getElementById('score100').innerHTML = `📊 Chương ${currentChapter}: đã chọn ${answered}/${filtered.length} câu`;
+    function updateChapterScore() {
+        let filtered = chapterQuestions.filter(q => q.chapter === currentChapter);
+        let answered = filtered.filter(q => chapterAnswers[chapterQuestions.findIndex(qq => qq.id === q.id)] !== null).length;
+        document.getElementById('scoreChapter').innerHTML = `📊 Chương ${currentChapter}: đã chọn ${answered}/${filtered.length} câu`;
     }
 
-    function reset100() {
-        let filtered = full100.filter(q => q.chapter === currentChapter);
+    function resetChapter() {
+        let filtered = chapterQuestions.filter(q => q.chapter === currentChapter);
         filtered.forEach(q => {
-            let idx = full100.findIndex(f => f.id === q.id);
-            answers100Arr[idx] = null;
+            let idx = chapterQuestions.findIndex(qq => qq.id === q.id);
+            chapterAnswers[idx] = null;
         });
-        render100();
+        renderChapter();
     }
 
     function renderChapterTabs() {
-        let names = {1:"Ch1: Tổng quan",2:"Ch2: OSI/TCP",3:"Ch3: TCP/UDP",4:"Ch4: WLAN",5:"Ch5: Dịch vụ",6:"Ch6: Cloud"};
-        let container = document.getElementById('chapterTabs100');
+        let names = {1:"Ch1: Tổng quan",2:"Ch2: OSI/TCP/IP",3:"Ch3: TCP/UDP",4:"Ch4: WLAN",5:"Ch5: Dịch vụ mạng",6:"Ch6: Cloud/Ảo hóa"};
+        let container = document.getElementById('chapterTabs');
         container.innerHTML = '';
         for (let i=1; i<=6; i++) {
             let btn = document.createElement('button');
             btn.textContent = names[i];
             btn.classList.add('chap-btn');
             if (i === currentChapter) btn.classList.add('active');
-            btn.onclick = () => { currentChapter = i; renderChapterTabs(); render100(); };
+            btn.onclick = () => { currentChapter = i; renderChapterTabs(); renderChapter(); };
             container.appendChild(btn);
         }
     }
@@ -434,18 +484,19 @@
         document.getElementById(panelId).classList.add('active-panel');
         document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
         document.querySelector(`.main-tab[data-panel="${panelId}"]`).classList.add('active');
-        if (panelId === 'panel45') render45();
-        if (panelId === 'panel100') render100();
+        if (panelId === 'panelBasic') renderBasic();
+        if (panelId === 'panelChapter') renderChapter();
     }
 
     document.querySelectorAll('.main-tab').forEach(tab => {
         tab.addEventListener('click', () => switchPanel(tab.dataset.panel));
     });
-    render45();
+
+    renderBasic();
     renderChapterTabs();
-    render100();
-    document.getElementById('reset45').addEventListener('click', reset45);
-    document.getElementById('reset100').addEventListener('click', reset100);
+    renderChapter();
+    document.getElementById('resetBasic').addEventListener('click', resetBasic);
+    document.getElementById('resetChapter').addEventListener('click', resetChapter);
 </script>
 </body>
 </html>
